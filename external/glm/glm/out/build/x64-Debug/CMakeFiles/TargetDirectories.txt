@@ -1,0 +1,4 @@
+C:/Users/Jorge/Documents/CGA/MarioCraft/external/glm/glm/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/Jorge/Documents/CGA/MarioCraft/external/glm/glm/out/build/x64-Debug/CMakeFiles/glm_static.dir
+C:/Users/Jorge/Documents/CGA/MarioCraft/external/glm/glm/out/build/x64-Debug/CMakeFiles/glm_shared.dir
+C:/Users/Jorge/Documents/CGA/MarioCraft/external/glm/glm/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

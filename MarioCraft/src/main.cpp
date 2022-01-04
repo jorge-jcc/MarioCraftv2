@@ -2535,7 +2535,7 @@ void renderScene(bool renderParticles) {
 }
 
 int main(int argc, char **argv) {
-	init(800, 700, "Window GLFW", false);
+	init(800, 700, "MarioCraft v2", false);
 	applicationLoop();
 	destroy();
 	return 1;

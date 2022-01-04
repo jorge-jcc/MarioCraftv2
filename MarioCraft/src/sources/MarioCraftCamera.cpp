@@ -24,22 +24,6 @@ void MarioCraftCamera::scrollCamera(GLFWwindow* window, double xoffset, double y
 }
 
 void MarioCraftCamera::keyboardInput(GLFWwindow* window, double deltaTime, int offsetX, int offsetY){
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-		camera->mouseMoveCamera(offsetX, offsetY, deltaTime);
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-		camera->mouseMoveCamera(0.0, offsetY, deltaTime);
-
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		Fpcamera->moveFrontCamera(true, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		Fpcamera->moveFrontCamera(false, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		Fpcamera->moveRightCamera(false, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		Fpcamera->moveRightCamera(true, deltaTime);
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-		Fpcamera->mouseMoveCamera(offsetX, offsetY, deltaTime);
-
 	if (enableCameraSelect && glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		enableCameraSelect = false;
 		FP = !FP;
@@ -48,6 +32,25 @@ void MarioCraftCamera::keyboardInput(GLFWwindow* window, double deltaTime, int o
 	}
 	else if (glfwGetKey(window, GLFW_KEY_K) == GLFW_RELEASE)
 		enableCameraSelect = true;
+
+	if (FP) {
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			Fpcamera->moveFrontCamera(true, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			Fpcamera->moveFrontCamera(false, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			Fpcamera->moveRightCamera(false, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			Fpcamera->moveRightCamera(true, deltaTime);
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+			Fpcamera->mouseMoveCamera(offsetX, offsetY, deltaTime);
+	}
+	else{
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+			camera->mouseMoveCamera(offsetX, offsetY, deltaTime);
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+			camera->mouseMoveCamera(0.0, offsetY, deltaTime);
+	}
 }
 
 Camera* MarioCraftCamera::get() {
