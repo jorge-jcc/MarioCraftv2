@@ -22,6 +22,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\sources\AnimModel.cpp" />
     <ClCompile Include="src\sources\Dragon.cpp" />
+    <ClCompile Include="src\sources\MarioCraftCamera.cpp" />
     <ClCompile Include="src\sources\MarioCraftModel.cpp" />
     <ClCompile Include="src\sources\MarioCraftTerrain.cpp" />
     <ClCompile Include="src\sources\MarioCraftTexture.cpp" />
@@ -31,6 +32,7 @@
     <ClInclude Include="src\headers\AnimModel.h" />
     <ClInclude Include="src\headers\Dragon.h" />
     <ClInclude Include="src\headers\libs.h" />
+    <ClInclude Include="src\headers\MarioCraftCamera.h" />
     <ClInclude Include="src\headers\MarioCraftModel.h" />
     <ClInclude Include="src\headers\MarioCraftTerrain.h" />
     <ClInclude Include="src\headers\MarioCraftTexture.h" />

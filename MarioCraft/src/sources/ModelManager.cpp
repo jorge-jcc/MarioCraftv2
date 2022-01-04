@@ -23,7 +23,7 @@ void ModelManager::updateModels() {
 		model->animate();
 }
 
-void ModelManager::renderBlending(std::shared_ptr<Camera> camera) {
+void ModelManager::renderBlending(MarioCraftCamera* camera) {
 	std::map<float, MarioCraftModel*> blendingSorted;
 	for (MarioCraftModel * model : staticModels) {
 		if (model->blending) {

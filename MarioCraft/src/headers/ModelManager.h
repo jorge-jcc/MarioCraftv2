@@ -1,6 +1,7 @@
 #pragma once
 #include "libs.h"
 #include "MarioCraftModel.h"
+#include "MarioCraftCamera.h"
 
 enum tipoModel { STATIC, DYNAMIC };
 
@@ -11,7 +12,7 @@ private:
 public:
 	void addModel(MarioCraftModel*, tipoModel tipo = STATIC);
 	void renderModels();
-	void renderBlending(std::shared_ptr<Camera>);
+	void renderBlending(MarioCraftCamera *);
 	void prepareModels(Shader * shader);
 	void keyboardInputModels();
 	void updateModels();

@@ -25,8 +25,6 @@
 #include "Headers/Sphere.h"
 #include "Headers/Cylinder.h"
 #include "Headers/Box.h"
-#include "Headers/FirstPersonCamera.h"
-#include "Headers/ThirdPersonCamera.h"
 
 //GLM include
 #define GLM_FORCE_RADIANS
@@ -53,6 +51,7 @@
 // OpenAL include
 #include <AL/alut.h>
 
+#include"MarioCraftCamera.h"
 #include "MarioCraftModel.h"
 #include "MarioCraftTexture.h"
 #include "ModelManager.h"
@@ -84,8 +83,7 @@ Shader shaderViewDepth;
 //Shader para dibujar el buffer de profunidad
 Shader shaderDepth;
 
-std::shared_ptr<Camera> camera(new ThirdPersonCamera());
-float distanceFromTarget = 7.0;
+MarioCraftCamera* camera = new MarioCraftCamera();
 
 Sphere skyboxSphere(20, 20);
 Box boxCollider;
@@ -665,10 +663,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Mayow
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
-
-	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
-	camera->setDistanceFromTarget(distanceFromTarget);
-	camera->setSensitivity(1.0);
 
 	// Definimos el tamanio de la imagen
 	int imageWidth, imageHeight;
@@ -1329,8 +1323,7 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
 }
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-	distanceFromTarget -= yoffset;
-	camera->setDistanceFromTarget(distanceFromTarget);
+	camera->scrollCamera(window, xoffset, yoffset);
 }
 
 void mouseButtonCallback(GLFWwindow *window, int button, int state, int mod) {
@@ -1355,12 +1348,11 @@ bool processInput(bool continueApplication) {
 		return false;
 	}
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-		camera->mouseMoveCamera(offsetX, 0.0, deltaTime);
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-		camera->mouseMoveCamera(0.0, offsetY, deltaTime);
+	// Control de la camara
+	camera->keyboardInput(window, deltaTime, offsetX, offsetY);
 	offsetX = 0;
 	offsetY = 0;
+
 
 	// Seleccionar modelo
 	if (enableCountSelected && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
@@ -1520,7 +1512,7 @@ void applicationLoop() {
 	lastTimeParticlesAnimationFire = lastTime;
 
 	glm::vec3 lightPos = glm::vec3(10.0, 10.0, 0.0);
-	shadowBox = new ShadowBox(-lightPos, camera.get(), 15.0f, 0.1f, 45.f);
+	shadowBox = new ShadowBox(-lightPos, camera->get(), 15.0f, 0.1f, 45.f);
 
 	while (psi) {
 		currTime = TimeManager::Instance().GetTime();
@@ -1539,7 +1531,7 @@ void applicationLoop() {
 		std::vector<float> matrixDartJoints;
 		std::vector<glm::mat4> matrixDart;
 
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f),
+		glm::mat4 projection = glm::perspective(glm::radians(camera->getZoom()),
 			(float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 
 		if (modelSelected == 1) {
