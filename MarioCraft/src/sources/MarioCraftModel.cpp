@@ -49,10 +49,6 @@ void MarioCraftModel::setShader(Shader* shader) {
 void MarioCraftModel::mcEnable(MCenum value) {
 	glm::mat4 matrixCollider;
 	switch (value) {
-	case BLENDING:
-		normalRender = false;
-		blending = true;
-		break;
 	case DEPTH:
 		normalRender = false;
 		depth = true;

@@ -1,7 +1,7 @@
 #pragma once
 #include "libs.h"
 
-enum MCenum { BLENDING, DEPTH, COLL_OBB, COLL_SBB };
+enum MCenum { DEPTH, COLL_OBB, COLL_SBB };
 
 using  namespace std;
 
@@ -11,7 +11,6 @@ private:
 public:
 	bool normalRender = true;
 	bool depth;
-	bool blending;
 	bool collider;
 	union {
 		AbstractModel::OBB * OBB;

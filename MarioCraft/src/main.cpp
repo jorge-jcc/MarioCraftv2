@@ -98,7 +98,8 @@ ModelManager * models;
 MarioCraftModel * castillo = new MarioCraftModel();
 MarioCraftModel * aircraft2 = new MarioCraftModel();
 MarioCraftModel * dragon = new MarioCraftModel();
-vector<MarioCraftModel> casas(12);
+vector<MarioCraftModel> casas(20);
+vector<MarioCraftModel> arboles(168);
 
 // Models complex instances
 Model modelRock;
@@ -549,7 +550,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelRock.loadModel("../models/rock/rock.obj");
 	modelRock.setShader(&shaderMulLighting);
 
-	aircraft.loadModel("../models/Aircraft_obj/E 45 Aircraft_obj.obj");
+	aircraft.loadModel("../models/CasaToad/casaToadAzul/casatoad.obj");
 	aircraft.setShader(&shaderMulLighting);
 
 	terrain.init();
@@ -566,53 +567,131 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		->Rotate(-3.6, 0.f, 1.f, 0.f)
 		->Translate(-8.0f, 0.0f, -111.0f)
 		->Scale(26.5f, 26.5f, 26.5f);
-	castillo->matrix[3][1] = terrain.getHeightTerrain(castillo->matrix[3][0], castillo->matrix[3][2]) + 20.5f;
-	castillo->mcEnable(BLENDING);
+	castillo->matrix[3][1] = terrain.getHeightTerrain(castillo->matrix[3][0], castillo->matrix[3][2]) + 19.f;
 	castillo->mcEnable(DEPTH);
 	models->addModel(castillo);
 
 
 	float coordenadasCasasToad[][2] = {
-		//Tres a lado de la carretera, alineados, a lado de las gallinas
-		{ 8.0f, -8.0f},
-		{ 8.0f, -16.0f},
-		{ 8.0f, -24.0f},
-		{ 8.0f, -32.0f},
-		{ 16.0f, -8.0f},
-		{ 16.0f, -16.0f},
-		{ 16.0f, -24.0f},
-		{ 16.0f, -32.0f},
-		{ 24.0f, -8.0f},
-		{ 24.0f, -16.0f},
-		{ 24.0f, -24.0f},
-		{ 24.0f, -32.0f},
+		// En medio de la pista
+		{ 8.0f, -5.0f},
+		{ 8.0f, -20.0f},
+		{ 8.0f, -35.0f},
+		{ 27.0f, -5.0f},
+		{ 27.0f, -20.0f},
+		{ 27.0f, -35.0f},
 
-		//2 en medio de la carretera
-		{ 70.0f, -95.0f},
-		{ 40.0f, -45.0f},
+		// A la derecha de la pista
+		{ 65.0f,  0.0f},
+		{ 65.0f, -15.0f},
+		{ 65.0f, -30.0f},
+		{ 65.0f, -45.0f},
+		{ 65.0f, -60.0f},
+		{ 85.0f,   0.0f},
+		{ 85.0f, -15.0f},
+		{ 85.0f, -30.0f},
+		{ 85.0f, -45.0f},
+		{ 85.0f, -60.0f},
 
-		//Mini Villa de Champi�ones 6 juntos en cuadr�cula 3x2
-		{ 130.0f, -80.0f},
-		{ 130.0f, -40.0f},
-		{ 130.0f,  0.0f},
-		{ 170.0f, -80.0f},
-		{ 170.0f, -40.0f},
-		{ 170.0f,  0.0f}
+		// A la izquierda de la pista
+		{ -25.0f, -5.0f},
+		{ -25.0f, -20.0f},
+		{ -25.0f, -35.0f},
+		{ -25.0f, -50.0f},
 	};
 
-	MarioCraftModel* casa;
-	for (int i = 0; i < casas.size(); i++) {
-		casa = &casas[i];
+	MarioCraftModel* model;
+	for (int i = 0; i < 6; i++) {
+		model = &casas[i];
 		if (i % 2 == 0) 
-			casa->loadModel("../models/CasaToad/casaToadAzul/casatoad.obj");
+			model->loadModel("../models/CasaToad/casaToadAzul/casatoad.obj");
 		else
-			casa->loadModel("../models/CasaToad/casaToadRoja/casatoad.obj");
-		casa->setShader(&shaderMulLighting);
-		casa->Init(glm::mat4(1.0f))
+			model->loadModel("../models/CasaToad/casaToadRoja/casatoad.obj");
+		model->setShader(&shaderMulLighting);
+		model->Init(glm::mat4(1.0f))
 			->Translate(coordenadasCasasToad[i][0], 0.f, coordenadasCasasToad[i][1])
-			->Scale(2.0f, 2.0f, 2.0f);
-		casa->matrix[3][1] = terrain.getHeightTerrain(casa->matrix[3][0], casa->matrix[3][2]);
-		models->addModel(casa);
+			->Rotate(-90.f, 0.f, 1.f, 0.f)
+			->Scale(3.0f, 3.0f, 3.0f);
+		model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]);
+		model->mcEnable(DEPTH);
+		model->mcEnable(DEPTH);
+		models->addModel(model);
+	}
+
+	for (int i = 6; i < 16; i++) {
+		model = &casas[i];
+		if (i % 2 == 0)
+			model->loadModel("../models/CasaToad/casaToadAzul/casatoad.obj");
+		else
+			model->loadModel("../models/CasaToad/casaToadRoja/casatoad.obj");
+		model->setShader(&shaderMulLighting);
+		model->Init(glm::mat4(1.0f))
+			->Translate(coordenadasCasasToad[i][0], 0.f, coordenadasCasasToad[i][1])
+			->Scale(3.0f, 3.0f, 3.0f);
+		model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]);
+		models->addModel(model);
+	}
+
+	for (int i = 16; i < 20; i++) {
+		model = &casas[i];
+		if (i % 2 == 0)
+			model->loadModel("../models/CasaToad/casaToadAzul/casatoad.obj");
+		else
+			model->loadModel("../models/CasaToad/casaToadRoja/casatoad.obj");
+		model->setShader(&shaderMulLighting);
+		model->Init(glm::mat4(1.0f))
+			->Translate(coordenadasCasasToad[i][0], 0.f, coordenadasCasasToad[i][1])
+			->Rotate(90.f, 0.f, 1.f, 0.f)
+			->Scale(3.0f, 3.0f, 3.0f);
+		model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]);
+		models->addModel(model);
+	}
+
+	int num;
+	int count = 0;
+	for (int i = 0; i < 10; i++) {
+		num = (i % 2) == 0 ? 5 : 4;
+		for (int j = 0; j < num; j++) {
+			model = &arboles[count++];
+			model->loadModel("../models/ArbolMinecraft1/arbol.obj");
+			model->setShader(&shaderMulLighting);
+			model->Init(glm::mat4(1.0f))
+				->Translate(23.f + 6 * i, 0.0, -((i % 2) == 0 ? 112.f : 115.f) - 6 * j)
+				->Scale(3.f, 3.f, 3.f);
+			model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]) - 0.5;
+			model->mcEnable(DEPTH);
+			models->addModel(model);
+		}
+	}
+
+	for (int i = 0; i < 10; i++) {
+		num = (i % 2) == 0 ? 5 : 4;
+		for (int j = 0; j < num; j++) {
+			model = &arboles[count++];
+			model->loadModel("../models/ArbolMinecraft1/arbol.obj");
+			model->setShader(&shaderMulLighting);
+			model->Init(glm::mat4(1.0f))
+				->Translate(-43.f - 6 * i, 0.0, -((i % 2) == 0 ? 112.f : 115.f) - 6 * j)
+				->Scale(3.f, 3.f, 3.f);
+			model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]) - 0.5;
+			model->mcEnable(DEPTH);
+			models->addModel(model);
+		}
+	}
+
+	for (int i = 0; i < 12; i++) {
+		num = (i % 2) == 0 ? 5 : 6;
+		for (int j = 0; j < num; j++) {
+			model = &arboles[count++];
+			model->loadModel("../models/ArbolMinecraft1/arbol.obj");
+			model->setShader(&shaderMulLighting);
+			model->Init(glm::mat4(1.0f))
+				->Translate(-27.f - 6 * i, 0.0, ((i % 2) == 0 ? 21.f : 24.f) + 6 * j)
+				->Scale(3.f, 3.f, 3.f);
+			model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]) - 2.3;
+			model->mcEnable(DEPTH);
+			models->addModel(model);
+		}
 	}
 
 
@@ -701,10 +780,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		skyboxTexture.freeImage(bitmap);
 	}
 
-	textureTerrainBackground = new MarioCraftTexture("../Textures/grassy2.jpg");
-	textureTerrainR = new MarioCraftTexture("../Textures/path.png");
-	textureTerrainG = new MarioCraftTexture("../Textures/grassFlowers.png");
-	textureTerrainB = new MarioCraftTexture("../Textures/mud.jpg");
+	textureTerrainBackground = new MarioCraftTexture("../Textures/pasto.jpg");
+	textureTerrainR = new MarioCraftTexture("../Textures/carretera.jpeg");
+	textureTerrainG = new MarioCraftTexture("../Textures/camino.jpeg");
+	textureTerrainB = new MarioCraftTexture("../Textures/tierra.jpeg");
 	textureTerrainBlendMap = new MarioCraftTexture("../Textures/blendMap.jpeg", true);
 
 	textureParticleFountain = new MarioCraftTexture("../Textures/bluewater.png");
@@ -1783,10 +1862,11 @@ void prepareScene() {
 	modelRock.setShader(&shaderMulLighting);
 
 	aircraft.setShader(&shaderMulLighting);
+	//castillo->setShader(&shaderMulLighting);
+
+	models->prepareModels(&shaderMulLighting);
 
 	terrain.setShader(&shaderTerrain);
-
-	models->prepareModels(&shaderTerrain);
 
 	// Helicopter
 	modelHeliChasis.setShader(&shaderMulLighting);
@@ -1831,9 +1911,10 @@ void prepareDepthScene() {
 
 	aircraft.setShader(&shaderDepth);
 
+
 	terrain.setShader(&shaderDepth);
 
-	//castillo.setShader(&shaderDepth);
+	//castillo->setShader(&shaderDepth);
 	models->prepareModels(&shaderDepth);
 
 	// Helicopter
@@ -1947,7 +2028,7 @@ void renderScene(bool renderParticles) {
 	glEnable(GL_CULL_FACE);
 
 	//models->updateModels();
-	models->prepareModels(&shaderMulLighting);
+	//models->prepareModels(&shaderMulLighting);
 	models->renderModels();
 
 	// Dart lego

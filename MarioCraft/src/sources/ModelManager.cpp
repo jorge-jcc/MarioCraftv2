@@ -26,7 +26,7 @@ void ModelManager::updateModels() {
 void ModelManager::renderBlending(MarioCraftCamera* camera) {
 	std::map<float, MarioCraftModel*> blendingSorted;
 	for (MarioCraftModel * model : staticModels) {
-		if (model->blending) {
+		if (model->depth) {
 			float distanceFromView = glm::length(camera->getPosition() - glm::vec3(model->matrix[3]));
 			blendingSorted[distanceFromView] = model;
 		}
