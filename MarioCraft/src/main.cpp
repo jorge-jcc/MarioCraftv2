@@ -98,6 +98,10 @@ ModelManager * models;
 MarioCraftModel * castillo = new MarioCraftModel();
 MarioCraftModel * aircraft2 = new MarioCraftModel();
 MarioCraftModel * dragon = new MarioCraftModel();
+MarioCraftModel * fortaleza = new MarioCraftModel();
+MarioCraftModel * casa1 = new MarioCraftModel();
+MarioCraftModel * casa2 = new MarioCraftModel();
+MarioCraftModel * casa3 = new MarioCraftModel();
 vector<MarioCraftModel> casas(20);
 vector<MarioCraftModel> arboles(168);
 
@@ -570,6 +574,47 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	castillo->matrix[3][1] = terrain.getHeightTerrain(castillo->matrix[3][0], castillo->matrix[3][2]) + 19.f;
 	castillo->mcEnable(DEPTH);
 	models->addModel(castillo);
+
+	fortaleza->loadModel("../models/CasaMinecraft4/fortaleza.obj");
+	fortaleza->setShader(&shaderMulLighting);
+	fortaleza
+		->Init(glm::mat4(1.0f))
+		->Translate(-29.0, 0.0f, 33.0f)
+		->Scale(2.f, 2.f, 2.f);
+	fortaleza->matrix[3][1] = terrain.getHeightTerrain(fortaleza->matrix[3][0], fortaleza->matrix[3][2]) - 1.f;
+	fortaleza->mcEnable(DEPTH);
+	models->addModel(fortaleza);
+
+	casa1->loadModel("../models/CasaMinecraft3/casa.obj");
+	casa1->setShader(&shaderMulLighting);
+	casa1
+		->Init(glm::mat4(1.0f))
+		->Translate(-85.f, 0.f, 50.f)
+		->Scale(1.8f, 1.8f, 1.8f);
+	casa1->matrix[3][1] = terrain.getHeightTerrain(casa1->matrix[3][0], casa1->matrix[3][2]) - 5;
+	casa1->mcEnable(DEPTH);
+	models->addModel(casa1);
+
+	casa2->loadModel("../models/CasaMinecraft1/casa.obj");
+	casa2->setShader(&shaderMulLighting);
+	casa2
+		->Init(glm::mat4(1.0f))
+		->Translate(-85.f, 0.f, 32.f)
+		->Scale(0.5f, 0.5f, 0.5f);
+	casa2->matrix[3][1] = terrain.getHeightTerrain(casa2->matrix[3][0], casa2->matrix[3][2]) + 5.9f;
+	casa2->mcEnable(DEPTH);
+	models->addModel(casa2);
+
+	casa3->loadModel("../models/CasaMinecraft2/casa2.obj");
+	casa3->setShader(&shaderMulLighting);
+	casa3
+		->Init(glm::mat4(1.0f))
+		->Translate(-85.f, 0.f, 10.f)
+		->Scale(10.0f, 10.0f, 10.0f);
+	casa3->matrix[3][1] = terrain.getHeightTerrain(casa3->matrix[3][0], casa3->matrix[3][2]) - 2.1;
+	casa3->mcEnable(DEPTH);
+	models->addModel(casa3);
+
 
 
 	float coordenadasCasasToad[][2] = {
