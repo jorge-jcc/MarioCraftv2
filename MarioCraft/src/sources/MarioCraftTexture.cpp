@@ -4,8 +4,8 @@ int MarioCraftTexture::imageWidth, MarioCraftTexture::imageHeight;
 FIBITMAP *MarioCraftTexture::bitmap;
 unsigned char *MarioCraftTexture::data;
 
-MarioCraftTexture::MarioCraftTexture(const string& FileName) : Texture(FileName) {
-	MarioCraftTexture::bitmap = Texture::loadImage();
+MarioCraftTexture::MarioCraftTexture(const string& FileName, bool flipImage) : Texture(FileName) {
+	MarioCraftTexture::bitmap = Texture::loadImage(flipImage);
 	MarioCraftTexture::data = Texture::convertToData(MarioCraftTexture::bitmap, 
 		MarioCraftTexture::imageWidth, MarioCraftTexture::imageHeight
 	);

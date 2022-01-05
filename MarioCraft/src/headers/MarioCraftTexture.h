@@ -12,7 +12,7 @@ private:
 public:
 	GLuint id;
 
-	MarioCraftTexture(const string& FileName);
+	MarioCraftTexture(const string& FileName, bool flipImage = false);
 	~MarioCraftTexture();
 };
 

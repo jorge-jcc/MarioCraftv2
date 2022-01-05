@@ -136,9 +136,16 @@ Model mayowModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 16, "../Textures/heightmap.jpeg");
 
-GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
-GLuint textureTerrainBackgroundID, textureTerrainRID, textureTerrainGID, textureTerrainBID, textureTerrainBlendMapID;
-GLuint textureParticleFountainID, textureParticleFireID, texId;
+MarioCraftTexture* textureTerrainBackground;
+MarioCraftTexture* textureTerrainR;
+MarioCraftTexture* textureTerrainG;
+MarioCraftTexture* textureTerrainB;
+MarioCraftTexture* textureTerrainBlendMap;
+
+MarioCraftTexture* textureParticleFountain;
+MarioCraftTexture* textureParticleFire;
+
+GLuint texId, textureTerrainBlendMapID;
 GLuint skyboxTextureID;
 
 GLenum types[6] = {
@@ -694,375 +701,14 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		skyboxTexture.freeImage(bitmap);
 	}
 
-	// Definiendo la textura a utilizar
-	Texture textureCesped("../Textures/cesped.jpg");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureCesped.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureCesped.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureCespedID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureCespedID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureCesped.freeImage(bitmap);
+	textureTerrainBackground = new MarioCraftTexture("../Textures/grassy2.jpg");
+	textureTerrainR = new MarioCraftTexture("../Textures/path.png");
+	textureTerrainG = new MarioCraftTexture("../Textures/grassFlowers.png");
+	textureTerrainB = new MarioCraftTexture("../Textures/mud.jpg");
+	textureTerrainBlendMap = new MarioCraftTexture("../Textures/blendMap.jpeg", true);
 
-	// Definiendo la textura a utilizar
-	Texture textureWall("../Textures/whiteWall.jpg");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureWall.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureWall.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureWallID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureWallID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureWall.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureWindow("../Textures/ventana.png");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureWindow.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureWindow.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureWindowID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureWindowID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureWindow.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureHighway("../Textures/highway.jpg");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureHighway.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureHighway.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureHighwayID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureHighwayID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureHighway.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureLandingPad("../Textures/landingPad.jpg");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureLandingPad.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureLandingPad.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureLandingPadID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureLandingPadID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureLandingPad.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureTerrainBackground("../Textures/grassy2.jpg");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureTerrainBackground.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureTerrainBackground.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureTerrainBackgroundID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureTerrainBackgroundID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureTerrainBackground.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureTerrainR("../Textures/path.png");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureTerrainR.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureTerrainR.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureTerrainRID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureTerrainRID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureTerrainR.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureTerrainG("../Textures/grassFlowers.png");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureTerrainG.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureTerrainG.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureTerrainGID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureTerrainGID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureTerrainG.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureTerrainB("../Textures/mud.jpg");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureTerrainB.loadImage();
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureTerrainB.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureTerrainBID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureTerrainBID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureTerrainB.freeImage(bitmap);
-
-	// Definiendo la textura a utilizar
-	Texture textureTerrainBlendMap("../Textures/blendMap.jpeg");
-	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureTerrainBlendMap.loadImage(true);
-	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
-	data = textureTerrainBlendMap.convertToData(bitmap, imageWidth,
-		imageHeight);
-	// Creando la textura con id 1
-	glGenTextures(1, &textureTerrainBlendMapID);
-	// Enlazar esa textura a una tipo de textura de 2D.
-	glBindTexture(GL_TEXTURE_2D, textureTerrainBlendMapID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Verifica si se pudo abrir la textura
-	if (data) {
-		// Transferis los datos de la imagen a memoria
-		// Tipo de textura, Mipmaps, Formato interno de openGL, ancho, alto, Mipmaps,
-		// Formato interno de la libreria de la imagen, el tipo de dato y al apuntador
-		// a los datos
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		// Generan los niveles del mipmap (OpenGL es el ecargado de realizarlos)
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	// Libera la memoria de la textura
-	textureTerrainBlendMap.freeImage(bitmap);
-
-	Texture textureParticlesFountain("../Textures/bluewater.png");
-	bitmap = textureParticlesFountain.loadImage();
-	data = textureParticlesFountain.convertToData(bitmap, imageWidth, imageHeight);
-	glGenTextures(1, &textureParticleFountainID);
-	glBindTexture(GL_TEXTURE_2D, textureParticleFountainID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);// set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	textureParticlesFountain.freeImage(bitmap);
-
-	Texture textureParticleFire("../Textures/fire.png");
-	bitmap = textureParticleFire.loadImage();
-	data = textureParticleFire.convertToData(bitmap, imageWidth, imageHeight);
-	glGenTextures(1, &textureParticleFireID);
-	glBindTexture(GL_TEXTURE_2D, textureParticleFireID);
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);// set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-		std::cout << "Failed to load texture" << std::endl;
-	textureParticleFire.freeImage(bitmap);
+	textureParticleFountain = new MarioCraftTexture("../Textures/bluewater.png");
+	textureParticleFire = new MarioCraftTexture("../Textures/fire.png");
 
 	std::uniform_real_distribution<float> distr01 = std::uniform_real_distribution<float>(0.0f, 1.0f);
 	std::mt19937 generator;
@@ -1263,18 +909,13 @@ void destroy() {
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glDeleteTextures(1, &textureCespedID);
-	glDeleteTextures(1, &textureWallID);
-	glDeleteTextures(1, &textureWindowID);
-	glDeleteTextures(1, &textureHighwayID);
-	glDeleteTextures(1, &textureLandingPadID);
-	glDeleteTextures(1, &textureTerrainBackgroundID);
-	glDeleteTextures(1, &textureTerrainRID);
-	glDeleteTextures(1, &textureTerrainGID);
-	glDeleteTextures(1, &textureTerrainBID);
-	glDeleteTextures(1, &textureTerrainBlendMapID);
-	glDeleteTextures(1, &textureParticleFountainID);
-	glDeleteTextures(1, &textureParticleFireID);
+	textureTerrainBackground->~MarioCraftTexture();
+	textureTerrainR->~MarioCraftTexture();
+	textureTerrainG->~MarioCraftTexture();
+	textureTerrainB->~MarioCraftTexture();
+	textureTerrainBlendMap->~MarioCraftTexture();
+	textureParticleFountain->~MarioCraftTexture();
+	textureParticleFire->~MarioCraftTexture();
 
 	// Cube Maps Delete
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -2239,23 +1880,23 @@ void renderScene(bool renderParticles) {
 	modelCesped = glm::scale(modelCesped, glm::vec3(200.0, 0.001, 200.0));
 	// Se activa la textura del background
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureTerrainBackgroundID);
+	glBindTexture(GL_TEXTURE_2D, textureTerrainBackground->id);
 	shaderTerrain.setInt("backgroundTexture", 0);
 	// Se activa la textura de tierra
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, textureTerrainRID);
+	glBindTexture(GL_TEXTURE_2D, textureTerrainR->id);
 	shaderTerrain.setInt("rTexture", 1);
 	// Se activa la textura de hierba
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, textureTerrainGID);
+	glBindTexture(GL_TEXTURE_2D, textureTerrainG->id);
 	shaderTerrain.setInt("gTexture", 2);
 	// Se activa la textura del camino
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, textureTerrainBID);
+	glBindTexture(GL_TEXTURE_2D, textureTerrainB->id);
 	shaderTerrain.setInt("bTexture", 3);
 	// Se activa la textura del blend map
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, textureTerrainBlendMapID);
+	glBindTexture(GL_TEXTURE_2D, textureTerrainBlendMap->id);
 	shaderTerrain.setInt("blendMapTexture", 4);
 	shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(40, 40)));
 	terrain.render();
@@ -2457,7 +2098,7 @@ void renderScene(bool renderParticles) {
 			// Set the point size
 			glPointSize(10.0f);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, textureParticleFountainID);
+			glBindTexture(GL_TEXTURE_2D, textureParticleFountain->id);
 			shaderParticlesFountain.turnOn();
 			shaderParticlesFountain.setFloat("Time", float(currTimeParticlesAnimation - lastTimeParticlesAnimation));
 			shaderParticlesFountain.setFloat("ParticleLifetime", 3.5f);
@@ -2505,7 +2146,7 @@ void renderScene(bool renderParticles) {
 
 			shaderParticlesFire.turnOn();
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, textureParticleFireID);
+			glBindTexture(GL_TEXTURE_2D, textureParticleFire->id);
 			glDepthMask(GL_FALSE);
 			glBindVertexArray(particleArray[drawBuf]);
 			glVertexAttribDivisor(0, 1);
