@@ -56,6 +56,7 @@
 #include "MarioCraftTexture.h"
 #include "ModelManager.h"
 #include "CasasToad.h"
+#include "Arbol.h"
 //#include "Dragon.h"
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
@@ -104,7 +105,7 @@ MarioCraftModel * casa1 = new MarioCraftModel();
 MarioCraftModel * casa2 = new MarioCraftModel();
 MarioCraftModel * casa3 = new MarioCraftModel();
 CasasToad * casita = new CasasToad();
-vector<MarioCraftModel> arboles(168);
+Arbol * arbol = new Arbol();
 
 // Mayow
 Model mayowModelAnimate;
@@ -569,59 +570,18 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		CasasToad::newCasa(AZUL, -25.f, -35.f, 90.f),
 		CasasToad::newCasa(ROJA, -25.f, -50.f, 90.f),
 	};
-
 	casita->Load(casitas, &shaderMulLighting);
 	casita->InitMatrices(&terrain);
 	models->addModel(casita);
 
-	MarioCraftModel* model;
-
-	int num;
-	int count = 0;
-	for (int i = 0; i < 10; i++) {
-		num = (i % 2) == 0 ? 5 : 4;
-		for (int j = 0; j < num; j++) {
-			model = &arboles[count++];
-			model->loadModel("../models/ArbolMinecraft1/arbol.obj");
-			model->setShader(&shaderMulLighting);
-			model->Init(glm::mat4(1.0f))
-				->Translate(23.f + 6 * i, 0.0, -((i % 2) == 0 ? 112.f : 115.f) - 6 * j)
-				->Scale(3.f, 3.f, 3.f);
-			model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]) - 0.5;
-			model->mcEnable(DEPTH);
-			models->addModel(model);
-		}
-	}
-
-	for (int i = 0; i < 10; i++) {
-		num = (i % 2) == 0 ? 5 : 4;
-		for (int j = 0; j < num; j++) {
-			model = &arboles[count++];
-			model->loadModel("../models/ArbolMinecraft1/arbol.obj");
-			model->setShader(&shaderMulLighting);
-			model->Init(glm::mat4(1.0f))
-				->Translate(-43.f - 6 * i, 0.0, -((i % 2) == 0 ? 112.f : 115.f) - 6 * j)
-				->Scale(3.f, 3.f, 3.f);
-			model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]) - 0.5;
-			model->mcEnable(DEPTH);
-			models->addModel(model);
-		}
-	}
-
-	for (int i = 0; i < 12; i++) {
-		num = (i % 2) == 0 ? 5 : 6;
-		for (int j = 0; j < num; j++) {
-			model = &arboles[count++];
-			model->loadModel("../models/ArbolMinecraft1/arbol.obj");
-			model->setShader(&shaderMulLighting);
-			model->Init(glm::mat4(1.0f))
-				->Translate(-27.f - 6 * i, 0.0, ((i % 2) == 0 ? 21.f : 24.f) + 6 * j)
-				->Scale(3.f, 3.f, 3.f);
-			model->matrix[3][1] = terrain.getHeightTerrain(model->matrix[3][0], model->matrix[3][2]) - 2.3;
-			model->mcEnable(DEPTH);
-			models->addModel(model);
-		}
-	}
+	vector<Bosque> arbolitos = {
+		Arbol::newArbol(5, 12,  25.f, -72.f),
+		Arbol::newArbol(5, 12, -30.5f, -72.f),
+		Arbol::newArbol(6, 13, -23.f,  65.f),
+	};
+	arbol->Load(&shaderMulLighting);
+	arbol->InitMatrices(arbolitos, &terrain);
+	models->addModel(arbol);
 
 	//Mayow
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
@@ -1204,6 +1164,19 @@ void applicationLoop() {
 			casaToadCollider.c = glm::vec3(modelMatrixCasitas[3]);
 			casaToadCollider.ratio = casita->casaRoja->getSbb().ratio * 3.0;
 			addOrUpdateColliders(collidersSBB, "casa-" + std::to_string(i), casaToadCollider, casita->matrices[i]);
+		}
+
+		for (int i = 0; i < arbol->matrices.size(); i++) {
+			AbstractModel::OBB arbolitoCollider;
+			glm::mat4 modelMatrixColliderArbolito = glm::mat4(arbol->matrices[i]);
+			// Set the orientation of collider before doing the scale
+			arbolitoCollider.u = glm::quat_cast(arbol->matrices[i]);
+			modelMatrixColliderArbolito = glm::scale(modelMatrixColliderArbolito, glm::vec3(3.0, 3.0, 3.0));
+			modelMatrixColliderArbolito = glm::translate(modelMatrixColliderArbolito, arbol->getObb().c);
+			modelMatrixColliderArbolito = glm::translate(modelMatrixColliderArbolito, glm::vec3(0.f, -0.4093f, 0.f));
+			arbolitoCollider.c = glm::vec3(modelMatrixColliderArbolito[3]);
+			arbolitoCollider.e = arbol->getObb().e * glm::vec3(3.0, 3.0, 3.0);
+			addOrUpdateColliders(collidersOBB, "arbol-" + std::to_string(i), arbolitoCollider, arbol->matrices[i]);
 		}
 
 		// Collider de mayow

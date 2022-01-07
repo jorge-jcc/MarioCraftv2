@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
-# File Created: 06.01.2022 22:21:33
+# File Created: 06.01.2022 22:21:10
 
-newmtl arbol_Oak_Leaves
+newmtl arbol_Oak_Log
 	Kd 1.0000 1.0000 1.0000
 	Ks 0.9000 0.9000 0.9000
 	Tr 0.0000
@@ -15,4 +15,3 @@ newmtl arbol_Oak_Leaves
 	Ke 0.0000 0.0000 0.0000
 	illum 2
 	map_Kd arbol.png
-	map_d arbol.png

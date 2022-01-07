@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\sources\Arbol.cpp" />
     <ClCompile Include="src\sources\CasasToad.cpp" />
     <ClCompile Include="src\sources\Dragon.cpp" />
     <ClCompile Include="src\sources\MarioCraftCamera.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="src\sources\ModelManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\Arbol.h" />
     <ClInclude Include="src\headers\CasasToad.h" />
     <ClInclude Include="src\headers\Dragon.h" />
     <ClInclude Include="src\headers\libs.h" />
