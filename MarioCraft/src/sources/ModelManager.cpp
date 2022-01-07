@@ -23,6 +23,11 @@ void ModelManager::updateModels() {
 		model->animate();
 }
 
+void ModelManager::destroy(){
+	for (MarioCraftModel* model : staticModels)
+		model->~MarioCraftModel();
+}
+
 void ModelManager::renderBlending(MarioCraftCamera* camera) {
 	std::map<float, MarioCraftModel*> blendingSorted;
 	for (MarioCraftModel * model : staticModels) {

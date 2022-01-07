@@ -1,6 +1,7 @@
 #pragma once
 #include <stdlib.h>
 #include <string>		
+#include <random>
 #include <vector>
 
 #include "Headers/Model.h"
@@ -8,6 +9,7 @@
 #include "Headers/Terrain.h"
 #include "Headers/FirstPersonCamera.h"
 #include "Headers/ThirdPersonCamera.h"
+#include "Headers/TimeManager.h"
 
 #include <GLFW/glfw3.h>
 

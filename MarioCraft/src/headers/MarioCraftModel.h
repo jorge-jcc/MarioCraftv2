@@ -19,7 +19,7 @@ public:
 	glm::mat4 matrix;
 
 	MarioCraftModel();
-	~MarioCraftModel();
+	virtual ~MarioCraftModel();
 	MarioCraftModel* Init(glm::mat4);
 	MarioCraftModel* Rotate(float, float, float, float);
 	MarioCraftModel* Translate(float, float, float);
@@ -27,6 +27,6 @@ public:
 	virtual void Render();
 	virtual void keyboardInput();
 	virtual void animate();
-	void setShader(Shader*);
+	virtual void setShader(Shader*);
 	void mcEnable(MCenum);
 };

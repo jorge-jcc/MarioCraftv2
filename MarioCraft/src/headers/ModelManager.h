@@ -16,4 +16,5 @@ public:
 	void prepareModels(Shader * shader);
 	void keyboardInputModels();
 	void updateModels();
+	void destroy();
 };
