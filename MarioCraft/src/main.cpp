@@ -104,6 +104,10 @@ MarioCraftModel * fortaleza = new MarioCraftModel();
 MarioCraftModel * casa1 = new MarioCraftModel();
 MarioCraftModel * casa2 = new MarioCraftModel();
 MarioCraftModel * casa3 = new MarioCraftModel();
+MarioCraftModel * meta = new MarioCraftModel();
+MarioCraftModel * puente = new MarioCraftModel();
+MarioCraftModel * banca = new MarioCraftModel();
+MarioCraftModel * lamp = new MarioCraftModel();
 CasasToad * casita = new CasasToad();
 Arbol * arbol = new Arbol();
 
@@ -507,6 +511,48 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	terrain.setPosition(glm::vec3(100, 0, 100));
 
 	models = new ModelManager();	
+
+	meta->loadModel("../models/meta/meta.obj");
+	meta->setShader(&shaderMulLighting);
+	meta
+		->Init(glm::mat4(1.0f))
+		//->Rotate(-3.6, 0.f, 1.f, 0.f)
+		->Translate(-8.6f, 1.5f, 20.0f)
+		->Scale(0.11f, 0.11f, 0.11f);
+	meta->mcEnable(DEPTH);
+	models->addModel(meta);
+
+	puente->loadModel("../models/puente1/puente1.obj");
+	puente->setShader(&shaderMulLighting);
+	puente
+		->Init(glm::mat4(1.0f))
+		//->Rotate(-3.6, 0.f, 1.f, 0.f)
+		->Translate(-8.2f, 2.0f, -38.0f)
+		->Scale(5.9f, 6.0f, 5.0f);
+	puente->mcEnable(DEPTH);
+	models->addModel(puente);
+
+	banca->loadModel("../models/banca/banca.obj");
+	banca->setShader(&shaderMulLighting);
+	banca
+		->Init(glm::mat4(1.0f))
+		//->Rotate(-3.6, 0.f, 1.f, 0.f)
+		->Translate(-10.0f, 2.0f, -28.0f)
+		->Scale(1.0f, 1.0f, 1.0f);
+	banca->matrix[3][1] = terrain.getHeightTerrain(banca->matrix[3][0], banca->matrix[3][2]);
+	banca->mcEnable(DEPTH);
+	models->addModel(banca);
+
+	lamp->loadModel("../models/lamp/lamp.obj");
+	lamp->setShader(&shaderMulLighting);
+	lamp
+		->Init(glm::mat4(1.0f))
+		//->Rotate(-3.6, 0.f, 1.f, 0.f)
+		->Translate(-20.0f, 0.0f, -28.0f)
+		->Scale(0.15f, 0.15f, 0.15f);
+	lamp->matrix[3][1] = terrain.getHeightTerrain(lamp->matrix[3][0], lamp->matrix[3][2]);
+	lamp->mcEnable(DEPTH);
+	models->addModel(lamp);
 
 	//MarioCraftModel* castillo = new MarioCraftModel("../models/Castillo/castillo.obj", &shaderMulLighting);
 	castillo->loadModel("../models/Castillo/castillo.obj");
@@ -917,7 +963,28 @@ bool processInput(bool continueApplication) {
 	if (exitApp || glfwWindowShouldClose(window) != 0) {
 		return false;
 	}
+	//control de Xbox
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == GL_TRUE) {
+		//std::cout << "Esta presente el mando" << std::endl;
+		int axesCount, buttonCount;
+		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
+		if (fabs(axes[0]) > 0.2) {
+			modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(1.0f), glm::vec3(0, -axes[0] * 0.1, 0));
+			animationIndex = 1;
+		}
 
+		if (fabs(axes[1]) > 0.2) {
+			modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, axes[1] * 0.1));
+			animationIndex = 0;
+		}
+
+		const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
+		if (!isJump && buttons[0] == GLFW_PRESS) {
+			isJump = true;
+			startTimeJump = currTime;
+			tmv = 0;
+		}
+	}
 	// Control de la camara
 	camera->keyboardInput(window, deltaTime, offsetX, offsetY);
 	offsetX = 0;
@@ -1250,6 +1317,64 @@ void applicationLoop() {
 			arbolitoCollider.e = arbol->getObb().e * glm::vec3(3.0, 3.0, 3.0);
 			addOrUpdateColliders(collidersOBB, "arbol-" + std::to_string(i), arbolitoCollider, arbol->matrices[i]);
 		}
+
+		//Collider Meta 
+
+		AbstractModel::OBB metaColliderIzq;
+		glm::mat4 modelMatrixColliderMetaIzq = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		metaColliderIzq.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderMetaIzq = glm::translate(modelMatrixColliderMetaIzq, meta->getObb().c);
+		modelMatrixColliderMetaIzq = glm::translate(modelMatrixColliderMetaIzq, glm::vec3(-52.0f, -15.0f, 0.0f));
+		metaColliderIzq.c = glm::vec3(modelMatrixColliderMetaIzq[3]);
+		metaColliderIzq.e = meta->getObb().e * glm::vec3(0.01, 0.05, 0.1);
+		addOrUpdateColliders(collidersOBB, "MetaIzq", metaColliderIzq, meta->matrix);
+
+		AbstractModel::OBB metaColliderDer;
+		glm::mat4 modelMatrixColliderMeta = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		metaColliderDer.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderMeta = glm::translate(modelMatrixColliderMeta, meta->getObb().c);
+		modelMatrixColliderMeta = glm::translate(modelMatrixColliderMeta, glm::vec3(52.0f, -15.0f, 0.0f));
+		metaColliderDer.c = glm::vec3(modelMatrixColliderMeta[3]);
+		metaColliderDer.e = meta->getObb().e * glm::vec3(0.01, 0.05, 0.1);
+		addOrUpdateColliders(collidersOBB, "MetaDer", metaColliderDer, meta->matrix);
+
+		//Collider Puente
+		AbstractModel::OBB puenteColliderPiso;
+		glm::mat4 modelMatrixColliderPuentePiso = glm::mat4(puente->matrix);
+		// Set the orientation of collider before doing the scale
+		puenteColliderPiso.u = glm::quat_cast(puente->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, puente->getObb().c);
+		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, glm::vec3(0.0f, -0.2f, 0.0f));
+		puenteColliderPiso.c = glm::vec3(modelMatrixColliderPuentePiso[3]);
+		puenteColliderPiso.e = puente->getObb().e * glm::vec3(5.9f, 0.5f, 5.0f);
+		addOrUpdateColliders(collidersOBB, "PuentePiso", puenteColliderPiso, puente->matrix);
+
+		AbstractModel::OBB puenteColliderIzq;
+		glm::mat4 modelMatrixColliderPuenteIzq = glm::mat4(puente->matrix);
+		// Set the orientation of collider before doing the scale
+		puenteColliderIzq.u = glm::quat_cast(puente->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderPuenteIzq = glm::translate(modelMatrixColliderPuenteIzq, puente->getObb().c);
+		modelMatrixColliderPuenteIzq = glm::translate(modelMatrixColliderPuenteIzq, glm::vec3(0.0f, 0.0f, -0.4f));
+		puenteColliderIzq.c = glm::vec3(modelMatrixColliderPuenteIzq[3]);
+		puenteColliderIzq.e = puente->getObb().e * glm::vec3(5.9f, 6.0f, 0.5f);
+		addOrUpdateColliders(collidersOBB, "PuenteIzq", puenteColliderIzq, puente->matrix);
+
+		AbstractModel::OBB puenteColliderDer;
+		glm::mat4 modelMatrixColliderPuenteDer = glm::mat4(puente->matrix);
+		// Set the orientation of collider before doing the scale
+		puenteColliderDer.u = glm::quat_cast(puente->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderPuenteDer = glm::translate(modelMatrixColliderPuenteDer, puente->getObb().c);
+		modelMatrixColliderPuenteDer = glm::translate(modelMatrixColliderPuenteDer, glm::vec3(0.0f, 0.0f, 0.4f));
+		puenteColliderDer.c = glm::vec3(modelMatrixColliderPuenteDer[3]);
+		puenteColliderDer.e = puente->getObb().e * glm::vec3(5.9f, 6.0f, 0.5f);
+		addOrUpdateColliders(collidersOBB, "PuenteDer", puenteColliderDer, puente->matrix);
 
 		// Collider de mayow
 		AbstractModel::OBB mayowCollider;
