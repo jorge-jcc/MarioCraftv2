@@ -34,14 +34,16 @@ void MarioCraftCamera::keyboardInput(GLFWwindow* window, double deltaTime, int o
 		enableCameraSelect = true;
 
 	//xbox
-	int axesCount, buttonCount;
-	const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
-	if (fabs(axes[3]) > 0.2) {
-		camera->mouseMoveCamera(0, axes[3], deltaTime);
-	}
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == GL_TRUE) {
+		int axesCount, buttonCount;
+		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
+		if (fabs(axes[3]) > 0.2) {
+			camera->mouseMoveCamera(0, axes[3], deltaTime);
+		}
 
-	if (fabs(axes[2]) > 0.2) {
-		camera->mouseMoveCamera(axes[2], 0, deltaTime);
+		if (fabs(axes[2]) > 0.2) {
+			camera->mouseMoveCamera(axes[2], 0, deltaTime);
+		}
 	}
 
 	if (FP) {
