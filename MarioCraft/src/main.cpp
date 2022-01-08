@@ -122,6 +122,7 @@ MarioCraftTexture * textureParticleFire;
 
 GLuint texId, textureTerrainBlendMapID;
 GLuint skyboxTextureID;
+GLuint nightSkyboxTextureID;
 
 GLenum types[6] = {
 GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -139,6 +140,19 @@ std::string fileNames[6] = {
 	"../Textures/skybox/front.jpg",
 	"../Textures/skybox/back.jpg",
 };
+
+std::string nightFileNames[6] = {
+	"../Textures/nightSkybox/right.png",
+	"../Textures/nightSkybox/left.png",
+	"../Textures/nightSkybox/top.png",
+	"../Textures/nightSkybox/bottom.png",
+	"../Textures/nightSkybox/front.png",
+	"../Textures/nightSkybox/back.png",
+};
+
+const float rotate_speed = 1.f;
+float rotation = 0;
+float timeDay = 0.f;
 
 bool exitApp = false;
 int lastMousePosX, offsetX = 0;
@@ -617,6 +631,30 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		skyboxTexture.freeImage(bitmap);
 	}
 
+	Texture nightSkyboxTexture = Texture("");
+	glGenTextures(1, &nightSkyboxTextureID);
+	// Tipo de textura CUBE MAP
+	glBindTexture(GL_TEXTURE_CUBE_MAP, nightSkyboxTextureID);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	for (int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(types); i++) {
+		nightSkyboxTexture = Texture(nightFileNames[i]);
+		FIBITMAP* bitmap = nightSkyboxTexture.loadImage(true);
+		unsigned char* data = nightSkyboxTexture.convertToData(bitmap, imageWidth,
+			imageHeight);
+		if (data) {
+			glTexImage2D(types[i], 0, GL_RGBA, imageWidth, imageHeight, 0,
+				GL_BGRA, GL_UNSIGNED_BYTE, data);
+		}
+		else
+			std::cout << "Failed to load texture" << std::endl;
+		nightSkyboxTexture.freeImage(bitmap);
+	}
+
 	textureTerrainBackground = new MarioCraftTexture("../Textures/pasto.jpg");
 	textureTerrainR = new MarioCraftTexture("../Textures/carretera.jpeg");
 	textureTerrainG = new MarioCraftTexture("../Textures/camino.jpeg");
@@ -810,6 +848,7 @@ void destroy() {
 	// Cube Maps Delete
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glDeleteTextures(1, &skyboxTextureID);
+	glDeleteTextures(1, &nightSkyboxTextureID);
 
 	// Remove the buffer of the fountain particles
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -982,6 +1021,34 @@ void applicationLoop() {
 		camera->updateCamera();
 		view = camera->getViewMatrix();
 
+		rotation += rotate_speed * deltaTime;
+		glm::mat4 viewRot = glm::rotate(view, glm::radians(rotation), glm::vec3(0.f, 1.f, 0.f));
+		timeDay += deltaTime * 100;
+		timeDay = (int)timeDay % 24000;
+		GLuint texture1;
+		GLuint texture2;
+		float blendFactor;
+		if (timeDay >= 0 && timeDay < 5000) {
+			texture1 = nightSkyboxTextureID;
+			texture2 = nightSkyboxTextureID;
+			blendFactor = (timeDay - 0) / (5000 - 0);
+		}
+		else if (timeDay >= 5000 && timeDay < 8000) {
+			texture1 = nightSkyboxTextureID;
+			texture2 = skyboxTextureID;
+			blendFactor = (timeDay - 5000) / (8000 - 5000);
+		}
+		else if (timeDay >= 8000 && timeDay < 21000) {
+			texture1 = skyboxTextureID;
+			texture2 = skyboxTextureID;
+			blendFactor = (timeDay - 8000) / (21000 - 8000);
+		}
+		else {
+			texture1 = skyboxTextureID;
+			texture2 = nightSkyboxTextureID;
+			blendFactor = (timeDay - 21000) / (24000 - 21000);
+		}
+
 		// Matriz de proyección del shadow mapping
 		glm::mat4 lightProjection = glm::mat4(1.f), lightView = glm::mat4(1.f);
 		shadowBox->update(screenWidth, screenHeight);
@@ -1003,7 +1070,7 @@ void applicationLoop() {
 		shaderSkybox.setMatrix4("projection", 1, false,
 			glm::value_ptr(projection));
 		shaderSkybox.setMatrix4("view", 1, false,
-			glm::value_ptr(glm::mat4(glm::mat3(view))));
+			glm::value_ptr(glm::mat4(glm::mat3(viewRot))));
 		// Settea la matriz de vista y projection al shader con multiples luces
 		shaderMulLighting.setMatrix4("projection", 1, false,
 			glm::value_ptr(projection));
@@ -1141,10 +1208,15 @@ void applicationLoop() {
 		// deshabilita el modo del recorte de caras ocultas para ver las esfera desde adentro
 		glGetIntegerv(GL_CULL_FACE_MODE, &oldCullFaceMode);
 		glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFuncMode);
-		shaderSkybox.setFloat("skybox", 0);
+		glActiveTexture(GL_TEXTURE11);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture1);
+		glActiveTexture(GL_TEXTURE12);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture2);
+		shaderSkybox.setInt("skybox", 11);
+		shaderSkybox.setInt("skyboxNight", 12);
+		shaderSkybox.setFloat("blendFactor", blendFactor);
 		glCullFace(GL_FRONT);
 		glDepthFunc(GL_LEQUAL);
-		glActiveTexture(GL_TEXTURE0);
 		skyboxSphere.render();
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
