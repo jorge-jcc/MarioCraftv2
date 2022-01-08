@@ -195,6 +195,9 @@ float GRAVITY = 1.81;
 double tmv = 0;
 double startTimeJump = 0;
 
+bool isPlataform = false;
+float platformHeight;
+
 // Definition for the particle system
 GLuint initVel, startTime;
 GLuint VAOParticles;
@@ -527,7 +530,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	puente
 		->Init(glm::mat4(1.0f))
 		//->Rotate(-3.6, 0.f, 1.f, 0.f)
-		->Translate(-8.2f, 2.0f, -38.0f)
+		->Translate(-8.2f, 2.f, -38.0f)
 		->Scale(5.9f, 6.0f, 5.0f);
 	puente->mcEnable(DEPTH);
 	models->addModel(puente);
@@ -1347,9 +1350,9 @@ void applicationLoop() {
 		glm::mat4 modelMatrixColliderPuentePiso = glm::mat4(puente->matrix);
 		// Set the orientation of collider before doing the scale
 		puenteColliderPiso.u = glm::quat_cast(puente->matrix);
-		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(5.9f, 0.5f, 5.0f));
 		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, puente->getObb().c);
-		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, glm::vec3(0.0f, -0.2f, 0.0f));
+		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, glm::vec3(0.0f, -0.15f, 0.0f));
 		puenteColliderPiso.c = glm::vec3(modelMatrixColliderPuentePiso[3]);
 		puenteColliderPiso.e = puente->getObb().e * glm::vec3(5.9f, 0.5f, 5.0f);
 		addOrUpdateColliders(collidersOBB, "PuentePiso", puenteColliderPiso, puente->matrix);
@@ -1419,6 +1422,8 @@ void applicationLoop() {
 		/*******************************************
 		 * Test Colisions
 		 *******************************************/
+		if (!isJump)
+			isPlataform = false;
 		for (std::map<std::string,
 			std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> >::iterator it =
 			collidersOBB.begin(); it != collidersOBB.end(); it++) {
@@ -1431,7 +1436,15 @@ void applicationLoop() {
 						std::get<0>(jt->second))) {
 					std::cout << "Colision " << it->first << " with "
 						<< jt->first << std::endl;
-					isCollision = true;
+					if (it->first.compare("mayow") == 0){ 
+						if (jt->first.compare("PuentePiso") == 0) {
+							isPlataform = true;
+							platformHeight = std::get<1>(jt->second)[3][1];
+						}
+						else
+							isCollision = true;
+					}
+					
 				}
 			}
 			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
@@ -1491,8 +1504,9 @@ void applicationLoop() {
 				if (!colIt->second)
 					addOrUpdateColliders(collidersOBB, jt->first);
 				else {
-					if (jt->first.compare("mayow") == 0)
+					if (jt->first.compare("mayow") == 0) {
 						modelMatrixMayow = std::get<1>(jt->second);
+					}
 				}
 			}
 		}
@@ -1620,13 +1634,14 @@ void renderScene(bool renderParticles) {
 	/*******************************************
 	 * Custom Anim objects obj
 	 *******************************************/
-	modelMatrixMayow[3][1] = -GRAVITY * tmv * tmv + 3.5 * tmv + terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
+	float altura;
+	altura = isPlataform ? platformHeight : terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
+	modelMatrixMayow[3][1] = -GRAVITY * tmv * tmv + 3.5 * tmv + altura;
 	tmv = currTime - startTimeJump;
-	if (modelMatrixMayow[3][1] < terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2])) {
+	if (modelMatrixMayow[3][1] < altura) {
 		isJump = false;
-		modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
+		modelMatrixMayow[3][1] = altura;
 	}
-	//modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
 	glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
 	modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
 	mayowModelAnimate.setAnimationIndex(animationIndex);
