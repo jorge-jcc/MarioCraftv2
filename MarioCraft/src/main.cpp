@@ -158,6 +158,7 @@ std::string nightFileNames[6] = {
 const float rotate_speed = 1.f;
 float rotation = 0;
 float timeDay = 0.f;
+glm::vec3 light = glm::vec3(0.05f);
 
 bool exitApp = false;
 int lastMousePosX, offsetX = 0;
@@ -195,6 +196,9 @@ bool isJump = false;
 float GRAVITY = 1.81;
 double tmv = 0;
 double startTimeJump = 0;
+
+bool isPlataform = false;
+float platformHeight;
 
 // Definition for the particle system
 GLuint initVel, startTime;
@@ -528,7 +532,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	puente
 		->Init(glm::mat4(1.0f))
 		//->Rotate(-3.6, 0.f, 1.f, 0.f)
-		->Translate(-8.2f, 2.0f, -38.0f)
+		->Translate(-8.2f, 2.f, -38.0f)
 		->Scale(5.9f, 6.0f, 5.0f);
 	puente->mcEnable(DEPTH);
 	models->addModel(puente);
@@ -1101,7 +1105,7 @@ void applicationLoop() {
 
 		rotation += rotate_speed * deltaTime;
 		glm::mat4 viewRot = glm::rotate(view, glm::radians(rotation), glm::vec3(0.f, 1.f, 0.f));
-		timeDay += deltaTime * 100;
+		timeDay += deltaTime * 200;
 		timeDay = (int)timeDay % 24000;
 		GLuint texture1;
 		GLuint texture2;
@@ -1180,22 +1184,26 @@ void applicationLoop() {
 		shaderTerrain.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.38, 0.68, 0.73)));
 		shaderSkybox.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.38, 0.68, 0.73)));
 
+		if (timeDay > 7000 && timeDay < 19000) {
+			light = glm::vec3(0.3 * glm::sin(glm::radians((timeDay - 7000) * 0.015)) + 0.05);
+		}
+
 		/*******************************************
 		 * Propiedades Luz direccional
 		 *******************************************/
 		shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+		shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(light)));
+		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
 		shaderMulLighting.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-0.707106781, -0.707106781, 0.0)));
 
 		/*******************************************
 		 * Propiedades Luz direccional Terrain
 		 *******************************************/
 		shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
-		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));
-		shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(light)));
+		shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+		shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
 		shaderTerrain.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-0.707106781, -0.707106781, 0.0)));
 
 		/*******************************************
@@ -1358,9 +1366,9 @@ void applicationLoop() {
 		glm::mat4 modelMatrixColliderPuentePiso = glm::mat4(puente->matrix);
 		// Set the orientation of collider before doing the scale
 		puenteColliderPiso.u = glm::quat_cast(puente->matrix);
-		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(5.9f, 0.5f, 5.0f));
 		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, puente->getObb().c);
-		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, glm::vec3(0.0f, -0.2f, 0.0f));
+		modelMatrixColliderPuentePiso = glm::translate(modelMatrixColliderPuentePiso, glm::vec3(0.0f, -0.15f, 0.0f));
 		puenteColliderPiso.c = glm::vec3(modelMatrixColliderPuentePiso[3]);
 		puenteColliderPiso.e = puente->getObb().e * glm::vec3(5.9f, 0.5f, 5.0f);
 		addOrUpdateColliders(collidersOBB, "PuentePiso", puenteColliderPiso, puente->matrix);
@@ -2357,6 +2365,8 @@ void applicationLoop() {
 		/*******************************************
 		 * Test Colisions
 		 *******************************************/
+		if (!isJump)
+			isPlataform = false;
 		for (std::map<std::string,
 			std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> >::iterator it =
 			collidersOBB.begin(); it != collidersOBB.end(); it++) {
@@ -2369,7 +2379,15 @@ void applicationLoop() {
 						std::get<0>(jt->second))) {
 					std::cout << "Colision " << it->first << " with "
 						<< jt->first << std::endl;
-					isCollision = true;
+					if (it->first.compare("mayow") == 0){ 
+						if (jt->first.compare("PuentePiso") == 0) {
+							isPlataform = true;
+							platformHeight = std::get<1>(jt->second)[3][1];
+						}
+						else
+							isCollision = true;
+					}
+					
 				}
 			}
 			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
@@ -2429,8 +2447,9 @@ void applicationLoop() {
 				if (!colIt->second)
 					addOrUpdateColliders(collidersOBB, jt->first);
 				else {
-					if (jt->first.compare("mayow") == 0)
+					if (jt->first.compare("mayow") == 0) {
 						modelMatrixMayow = std::get<1>(jt->second);
+					}
 				}
 			}
 		}
@@ -2558,13 +2577,14 @@ void renderScene(bool renderParticles) {
 	/*******************************************
 	 * Custom Anim objects obj
 	 *******************************************/
-	modelMatrixMayow[3][1] = -GRAVITY * tmv * tmv + 3.5 * tmv + terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
+	float altura;
+	altura = isPlataform ? platformHeight : terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
+	modelMatrixMayow[3][1] = -GRAVITY * tmv * tmv + 3.5 * tmv + altura;
 	tmv = currTime - startTimeJump;
-	if (modelMatrixMayow[3][1] < terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2])) {
+	if (modelMatrixMayow[3][1] < altura) {
 		isJump = false;
-		modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
+		modelMatrixMayow[3][1] = altura;
 	}
-	//modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
 	glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
 	modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
 	mayowModelAnimate.setAnimationIndex(animationIndex);
