@@ -20,18 +20,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\sources\Antorcha.cpp" />
     <ClCompile Include="src\sources\Arbol.cpp" />
     <ClCompile Include="src\sources\CasasToad.cpp" />
     <ClCompile Include="src\sources\Dragon.cpp" />
+    <ClCompile Include="src\sources\Lampara.cpp" />
     <ClCompile Include="src\sources\MarioCraftCamera.cpp" />
     <ClCompile Include="src\sources\MarioCraftModel.cpp" />
     <ClCompile Include="src\sources\MarioCraftTexture.cpp" />
     <ClCompile Include="src\sources\ModelManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\Antorcha.h" />
     <ClInclude Include="src\headers\Arbol.h" />
     <ClInclude Include="src\headers\CasasToad.h" />
     <ClInclude Include="src\headers\Dragon.h" />
+    <ClInclude Include="src\headers\Lampara.h" />
     <ClInclude Include="src\headers\libs.h" />
     <ClInclude Include="src\headers\MarioCraftCamera.h" />
     <ClInclude Include="src\headers\MarioCraftModel.h" />
@@ -42,7 +46,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{7EE9222A-5093-4BF4-B204-8F30273CAC1C}</ProjectGuid>
     <RootNamespace>MarioCraft</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
     <ProjectName>MarioCraft</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
