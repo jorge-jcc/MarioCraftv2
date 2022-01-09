@@ -57,6 +57,8 @@
 #include "ModelManager.h"
 #include "CasasToad.h"
 #include "Arbol.h"
+#include "Antorcha.h"
+#include "Lampara.h"
 //#include "Dragon.h"
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
@@ -111,6 +113,8 @@ MarioCraftModel * lamp = new MarioCraftModel();
 MarioCraftModel * laberinto = new MarioCraftModel();
 CasasToad * casita = new CasasToad();
 Arbol * arbol = new Arbol();
+Antorcha * antorcha = new Antorcha();
+Lampara * lampara = new Lampara();
 
 // Mayow
 Model mayowModelAnimate;
@@ -548,17 +552,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	banca->mcEnable(DEPTH);
 	models->addModel(banca);
 
-	lamp->loadModel("../models/lamp/lamp.obj");
-	lamp->setShader(&shaderMulLighting);
-	lamp
-		->Init(glm::mat4(1.0f))
-		//->Rotate(-3.6, 0.f, 1.f, 0.f)
-		->Translate(-20.0f, 0.0f, -28.0f)
-		->Scale(0.15f, 0.15f, 0.15f);
-	lamp->matrix[3][1] = terrain.getHeightTerrain(lamp->matrix[3][0], lamp->matrix[3][2]);
-	lamp->mcEnable(DEPTH);
-	models->addModel(lamp);
-
 	laberinto->loadModel("../models/laberinto/laberinto.obj");
 	laberinto->setShader(&shaderMulLighting);
 	laberinto
@@ -657,6 +650,56 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	arbol->Load(&shaderMulLighting);
 	arbol->InitMatrices(arbolitos, &terrain);
 	models->addModel(arbol);
+
+	// ---------------------------------------------------------------------------
+	// Antorchas
+	vector<float> antorchitas = {
+		-70.f, 22.f,
+		-70.f, 41.f,
+
+		-25.f, 25.f,
+	};
+	antorcha->Load(&shaderMulLighting);
+	antorcha->InitMatrices(antorchitas, &terrain);
+	models->addModel(antorcha);
+
+	// ---------------------------------------------------------------------------
+	// Lamparas
+	vector<float> lamparitas = {
+		-14.0f, -0.0f,
+		-14.0f, -22.5f,
+		//-14.0f, -30.0f,
+		-14.0f, -45.0f,
+
+		/*
+		-0.7f, -0.0f,
+		-0.7f, -25.5f,
+		//-0.7f, -30.0f,
+		-0.7f, -45.0f,
+		*/
+
+		17.f, -0.0f,
+		//17.f, -15.0f,
+		17.f, -22.5f,
+		17.f, -45.0f,
+		/*
+		59.5f,   7.5f,
+		59.5f, - 8.5f,
+		59.5f, -23.5f,
+		59.5f, -38.5f,
+		59.5f, -53.5f,
+		*/ 
+
+		76.f,   7.5f,
+		76.f, -12.5f,
+		76.f, -32.5f,
+		76.f, -52.5f,
+
+
+	};
+	lampara->Load(&shaderMulLighting);
+	lampara->InitMatrices(lamparitas, &terrain);
+	models->addModel(lampara);
 
 	//Mayow
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
@@ -1185,7 +1228,7 @@ void applicationLoop() {
 		shaderSkybox.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.38, 0.68, 0.73)));
 
 		if (timeDay > 7000 && timeDay < 19000) {
-			light = glm::vec3(0.3 * glm::sin(glm::radians((timeDay - 7000) * 0.015)) + 0.05);
+			light = glm::vec3(0.3 * glm::sin(glm::radians((timeDay - 7000.f) * 0.015)) + 0.05);
 		}
 
 		/*******************************************
@@ -1210,55 +1253,54 @@ void applicationLoop() {
 		 * Propiedades SpotLights
 		 *******************************************/
 		
-
 		/*******************************************
 		 * Propiedades PointLights
 		 *******************************************/
-		shaderMulLighting.setInt("pointLightCount", lamp1Position.size() + lamp2Orientation.size());
-		shaderTerrain.setInt("pointLightCount", lamp1Position.size() + lamp2Orientation.size());
-		for (int i = 0; i < lamp1Position.size(); i++) {
-			glm::mat4 matrixAdjustLamp = glm::mat4(1.0f);
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, lamp1Position[i]);
-			matrixAdjustLamp = glm::rotate(matrixAdjustLamp, glm::radians(lamp1Orientation[i]), glm::vec3(0, 1, 0));
-			matrixAdjustLamp = glm::scale(matrixAdjustLamp, glm::vec3(0.5, 0.5, 0.5));
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0, 10.3585, 0));
-			glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.01);
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
-			shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.02);
+		if (timeDay < 7000 || timeDay > 22000) {
+			shaderMulLighting.setInt("pointLightCount", lampara->matrices.size() + antorcha->matrices.size());
+			shaderTerrain.setInt("pointLightCount", lampara->matrices.size() + antorcha->matrices.size());
+			for (int i = 0; i < lampara->matrices.size(); i++) {
+				glm::mat4 matrixAdjustLamp = lampara->matrices[i];
+				matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0, 3, 0));
+				glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.5, 0.02)));
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
+				shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
+				shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
+				shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.01);
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.5, 0.02)));
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
+				shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
+				shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
+				shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.01);
+			}
+			for (int i = 0; i < antorcha->matrices.size(); i++) {
+				glm::mat4 matrixAdjustLamp = antorcha->matrices[i];
+				matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0, 2, 0));
+				glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.5, 0.02)));
+				shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].position", glm::value_ptr(lampPosition));
+				shaderMulLighting.setFloat("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].constant", 1.0);
+				shaderMulLighting.setFloat("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].linear", 0.09);
+				shaderMulLighting.setFloat("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].quadratic", 0.01);
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.5, 0.02)));
+				shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].position", glm::value_ptr(lampPosition));
+				shaderTerrain.setFloat("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].constant", 1.0);
+				shaderTerrain.setFloat("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].linear", 0.09);
+				shaderTerrain.setFloat("pointLights[" + std::to_string(i + lampara->matrices.size()) + "].quadratic", 0.01);
+			}
 		}
-		for (int i = 0; i < lamp2Position.size(); i++) {
-			glm::mat4 matrixAdjustLamp = glm::mat4(1.0f);
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, lamp2Position[i]);
-			matrixAdjustLamp = glm::rotate(matrixAdjustLamp, glm::radians(lamp2Orientation[i]), glm::vec3(0, 1, 0));
-			matrixAdjustLamp = glm::scale(matrixAdjustLamp, glm::vec3(1.0, 1.0, 1.0));
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0.759521, 5.00174, 0));
-			glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.01);
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
-			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
+		else {
+			shaderMulLighting.setInt("pointLightCount", 0);
+			shaderTerrain.setInt("pointLightCount", 0);
 		}
 
 		/*******************************************
