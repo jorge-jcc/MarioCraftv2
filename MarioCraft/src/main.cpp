@@ -157,6 +157,7 @@ std::string nightFileNames[6] = {
 const float rotate_speed = 1.f;
 float rotation = 0;
 float timeDay = 0.f;
+glm::vec3 light = glm::vec3(0.05f);
 
 bool exitApp = false;
 int lastMousePosX, offsetX = 0;
@@ -1093,7 +1094,7 @@ void applicationLoop() {
 
 		rotation += rotate_speed * deltaTime;
 		glm::mat4 viewRot = glm::rotate(view, glm::radians(rotation), glm::vec3(0.f, 1.f, 0.f));
-		timeDay += deltaTime * 100;
+		timeDay += deltaTime * 200;
 		timeDay = (int)timeDay % 24000;
 		GLuint texture1;
 		GLuint texture2;
@@ -1172,22 +1173,26 @@ void applicationLoop() {
 		shaderTerrain.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.38, 0.68, 0.73)));
 		shaderSkybox.setVectorFloat3("fogColor", glm::value_ptr(glm::vec3(0.38, 0.68, 0.73)));
 
+		if (timeDay > 7000 && timeDay < 19000) {
+			light = glm::vec3(0.3 * glm::sin(glm::radians((timeDay - 7000) * 0.015)) + 0.05);
+		}
+
 		/*******************************************
 		 * Propiedades Luz direccional
 		 *******************************************/
 		shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+		shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(light)));
+		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
 		shaderMulLighting.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-0.707106781, -0.707106781, 0.0)));
 
 		/*******************************************
 		 * Propiedades Luz direccional Terrain
 		 *******************************************/
 		shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
-		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.5, 0.5, 0.5)));
-		shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(light)));
+		shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+		shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
 		shaderTerrain.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-0.707106781, -0.707106781, 0.0)));
 
 		/*******************************************
