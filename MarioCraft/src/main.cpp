@@ -108,6 +108,7 @@ MarioCraftModel * meta = new MarioCraftModel();
 MarioCraftModel * puente = new MarioCraftModel();
 MarioCraftModel * banca = new MarioCraftModel();
 MarioCraftModel * lamp = new MarioCraftModel();
+MarioCraftModel * laberinto = new MarioCraftModel();
 CasasToad * casita = new CasasToad();
 Arbol * arbol = new Arbol();
 
@@ -553,6 +554,16 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	lamp->matrix[3][1] = terrain.getHeightTerrain(lamp->matrix[3][0], lamp->matrix[3][2]);
 	lamp->mcEnable(DEPTH);
 	models->addModel(lamp);
+
+	laberinto->loadModel("../models/laberinto/laberinto.obj");
+	laberinto->setShader(&shaderMulLighting);
+	laberinto
+		->Init(glm::mat4(1.0f))
+		->Translate(60.0f, 1.8f, 85.0f)
+		->Scale(5.0f, 5.0f, 6.0f)
+		->Rotate(-90.0f, 0.f, 1.f, 0.f);
+	laberinto->mcEnable(DEPTH);
+	models->addModel(laberinto);
 
 	//MarioCraftModel* castillo = new MarioCraftModel("../models/Castillo/castillo.obj", &shaderMulLighting);
 	castillo->loadModel("../models/Castillo/castillo.obj");
@@ -1375,6 +1386,933 @@ void applicationLoop() {
 		puenteColliderDer.c = glm::vec3(modelMatrixColliderPuenteDer[3]);
 		puenteColliderDer.e = puente->getObb().e * glm::vec3(5.9f, 6.0f, 0.5f);
 		addOrUpdateColliders(collidersOBB, "PuenteDer", puenteColliderDer, puente->matrix);
+
+
+		//Collider Laberinto *****************************************************************************
+		AbstractModel::OBB laberintoCollider0;
+		glm::mat4 modelMatrixColliderLaberinto0 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider0.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto0 = glm::translate(modelMatrixColliderLaberinto0, meta->getObb().c);
+		modelMatrixColliderLaberinto0 = glm::translate(modelMatrixColliderLaberinto0, glm::vec3(445.0f, 5.0f, 167.0f));
+		laberintoCollider0.c = glm::vec3(modelMatrixColliderLaberinto0[3]);
+		laberintoCollider0.e = meta->getObb().e * glm::vec3(0.31, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto0", laberintoCollider0, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider1;
+		glm::mat4 modelMatrixColliderLaberinto1 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider1.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto1 = glm::translate(modelMatrixColliderLaberinto1, meta->getObb().c);
+		modelMatrixColliderLaberinto1 = glm::translate(modelMatrixColliderLaberinto1, glm::vec3(445.0f, 5.0f, 202.0f));
+		laberintoCollider1.c = glm::vec3(modelMatrixColliderLaberinto1[3]);
+		laberintoCollider1.e = meta->getObb().e * glm::vec3(0.25, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto1", laberintoCollider1, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider2;
+		glm::mat4 modelMatrixColliderLaberinto2 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider2.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto2 = glm::translate(modelMatrixColliderLaberinto2, meta->getObb().c);
+		modelMatrixColliderLaberinto2 = glm::translate(modelMatrixColliderLaberinto2, glm::vec3(450.0f, 5.0f, 238.0f));
+		laberintoCollider2.c = glm::vec3(modelMatrixColliderLaberinto2[3]);
+		laberintoCollider2.e = meta->getObb().e * glm::vec3(0.19, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto2", laberintoCollider2, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider3;
+		glm::mat4 modelMatrixColliderLaberinto3 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider3.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto3 = glm::translate(modelMatrixColliderLaberinto3, meta->getObb().c);
+		modelMatrixColliderLaberinto3 = glm::translate(modelMatrixColliderLaberinto3, glm::vec3(455.0f, 5.0f, 274.0f));
+		laberintoCollider3.c = glm::vec3(modelMatrixColliderLaberinto3[3]);
+		laberintoCollider3.e = meta->getObb().e * glm::vec3(0.16, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto3", laberintoCollider3, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider4;
+		glm::mat4 modelMatrixColliderLaberinto4 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider4.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto4 = glm::translate(modelMatrixColliderLaberinto4, meta->getObb().c);
+		modelMatrixColliderLaberinto4 = glm::translate(modelMatrixColliderLaberinto4, glm::vec3(525.0f, 5.0f, 310.0f));
+		laberintoCollider4.c = glm::vec3(modelMatrixColliderLaberinto4[3]);
+		laberintoCollider4.e = meta->getObb().e * glm::vec3(0.22, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto4", laberintoCollider4, meta->matrix);
+		//****
+		AbstractModel::OBB laberintoCollider5;
+		glm::mat4 modelMatrixColliderLaberinto5 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider5.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto5 = glm::translate(modelMatrixColliderLaberinto5, meta->getObb().c);
+		modelMatrixColliderLaberinto5 = glm::translate(modelMatrixColliderLaberinto5, glm::vec3(808.0f, 5.0f, 167.0f));
+		laberintoCollider5.c = glm::vec3(modelMatrixColliderLaberinto5[3]);
+		laberintoCollider5.e = meta->getObb().e * glm::vec3(0.30, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto5", laberintoCollider5, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider6;
+		glm::mat4 modelMatrixColliderLaberinto6 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider6.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto6 = glm::translate(modelMatrixColliderLaberinto6, meta->getObb().c);
+		modelMatrixColliderLaberinto6 = glm::translate(modelMatrixColliderLaberinto6, glm::vec3(810.0f, 5.0f, 202.0f));
+		laberintoCollider6.c = glm::vec3(modelMatrixColliderLaberinto6[3]);
+		laberintoCollider6.e = meta->getObb().e * glm::vec3(0.25, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto6", laberintoCollider6, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider7;
+		glm::mat4 modelMatrixColliderLaberinto7 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider7.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto7 = glm::translate(modelMatrixColliderLaberinto7, meta->getObb().c);
+		modelMatrixColliderLaberinto7 = glm::translate(modelMatrixColliderLaberinto7, glm::vec3(780.0f, 5.0f, 238.0f));
+		laberintoCollider7.c = glm::vec3(modelMatrixColliderLaberinto7[3]);
+		laberintoCollider7.e = meta->getObb().e * glm::vec3(0.25, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto7", laberintoCollider7, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider8;
+		glm::mat4 modelMatrixColliderLaberinto8 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider8.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto8 = glm::translate(modelMatrixColliderLaberinto8, meta->getObb().c);
+		modelMatrixColliderLaberinto8 = glm::translate(modelMatrixColliderLaberinto8, glm::vec3(755.0f, 5.0f, 274.0f));
+		laberintoCollider8.c = glm::vec3(modelMatrixColliderLaberinto8[3]);
+		laberintoCollider8.e = meta->getObb().e * glm::vec3(0.25, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto8", laberintoCollider8, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider9;
+		glm::mat4 modelMatrixColliderLaberinto9 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider9.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto9 = glm::translate(modelMatrixColliderLaberinto9, meta->getObb().c);
+		modelMatrixColliderLaberinto9 = glm::translate(modelMatrixColliderLaberinto9, glm::vec3(780.0f, 5.0f, 310.0f));
+		laberintoCollider9.c = glm::vec3(modelMatrixColliderLaberinto9[3]);
+		laberintoCollider9.e = meta->getObb().e * glm::vec3(0.14, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto9", laberintoCollider9, meta->matrix);
+
+		//77777777777777777
+
+		AbstractModel::OBB laberintoCollider10;
+		glm::mat4 modelMatrixColliderLaberinto10 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider10.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto10 = glm::translate(modelMatrixColliderLaberinto10, meta->getObb().c);
+		modelMatrixColliderLaberinto10 = glm::translate(modelMatrixColliderLaberinto10, glm::vec3(779.0f, 5.0f, 346.0f));
+		laberintoCollider10.c = glm::vec3(modelMatrixColliderLaberinto10[3]);
+		laberintoCollider10.e = meta->getObb().e * glm::vec3(0.08, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto10", laberintoCollider10, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider11;
+		glm::mat4 modelMatrixColliderLaberinto11 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider11.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto11 = glm::translate(modelMatrixColliderLaberinto11, meta->getObb().c);
+		modelMatrixColliderLaberinto11 = glm::translate(modelMatrixColliderLaberinto11, glm::vec3(765.0f, 5.0f, 386.0f));
+		laberintoCollider11.c = glm::vec3(modelMatrixColliderLaberinto11[3]);
+		laberintoCollider11.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto11", laberintoCollider11, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider12;
+		glm::mat4 modelMatrixColliderLaberinto12 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider12.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto12 = glm::translate(modelMatrixColliderLaberinto12, meta->getObb().c);
+		modelMatrixColliderLaberinto12 = glm::translate(modelMatrixColliderLaberinto12, glm::vec3(735.0f, 5.0f, 420.0f));
+		laberintoCollider12.c = glm::vec3(modelMatrixColliderLaberinto12[3]);
+		laberintoCollider12.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto12", laberintoCollider12, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider13;
+		glm::mat4 modelMatrixColliderLaberinto13 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider13.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto13 = glm::translate(modelMatrixColliderLaberinto13, meta->getObb().c);
+		modelMatrixColliderLaberinto13 = glm::translate(modelMatrixColliderLaberinto13, glm::vec3(705.0f, 5.0f, 456.0f));
+		laberintoCollider13.c = glm::vec3(modelMatrixColliderLaberinto13[3]);
+		laberintoCollider13.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto13", laberintoCollider13, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider14;
+		glm::mat4 modelMatrixColliderLaberinto14 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider14.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto14 = glm::translate(modelMatrixColliderLaberinto14, meta->getObb().c);
+		modelMatrixColliderLaberinto14 = glm::translate(modelMatrixColliderLaberinto14, glm::vec3(675.0f, 5.0f, 493.0f));
+		laberintoCollider14.c = glm::vec3(modelMatrixColliderLaberinto14[3]);
+		laberintoCollider14.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto14", laberintoCollider14, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider15;
+		glm::mat4 modelMatrixColliderLaberinto15 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider15.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto15 = glm::translate(modelMatrixColliderLaberinto15, meta->getObb().c);
+		modelMatrixColliderLaberinto15 = glm::translate(modelMatrixColliderLaberinto15, glm::vec3(660.0f, 5.0f, 529.0f));
+		laberintoCollider15.c = glm::vec3(modelMatrixColliderLaberinto15[3]);
+		laberintoCollider15.e = meta->getObb().e * glm::vec3(0.03, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto15", laberintoCollider15, meta->matrix);
+		
+		//jjjjjjjjjjjjjjjjj
+
+		AbstractModel::OBB laberintoCollider16;
+		glm::mat4 modelMatrixColliderLaberinto16 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider16.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto16 = glm::translate(modelMatrixColliderLaberinto16, meta->getObb().c);
+		modelMatrixColliderLaberinto16 = glm::translate(modelMatrixColliderLaberinto16, glm::vec3(630.0f, 5.0f, 640.0f));
+		laberintoCollider16.c = glm::vec3(modelMatrixColliderLaberinto16[3]);
+		laberintoCollider16.e = meta->getObb().e * glm::vec3(0.08, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto16", laberintoCollider16, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider17;
+		glm::mat4 modelMatrixColliderLaberinto17 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider17.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto17 = glm::translate(modelMatrixColliderLaberinto17, meta->getObb().c);
+		modelMatrixColliderLaberinto17 = glm::translate(modelMatrixColliderLaberinto17, glm::vec3(630.0f, 5.0f, 675.0f));
+		laberintoCollider17.c = glm::vec3(modelMatrixColliderLaberinto17[3]);
+		laberintoCollider17.e = meta->getObb().e * glm::vec3(0.14, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto17", laberintoCollider17, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider18;
+		glm::mat4 modelMatrixColliderLaberinto18 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider18.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto18 = glm::translate(modelMatrixColliderLaberinto18, meta->getObb().c);
+		modelMatrixColliderLaberinto18 = glm::translate(modelMatrixColliderLaberinto18, glm::vec3(630.0f, 5.0f, 710.0f));
+		laberintoCollider18.c = glm::vec3(modelMatrixColliderLaberinto18[3]);
+		laberintoCollider18.e = meta->getObb().e * glm::vec3(0.63, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto18", laberintoCollider18, meta->matrix);
+
+		//kkkkkkkkkkkkkk
+
+		AbstractModel::OBB laberintoCollider19;
+		glm::mat4 modelMatrixColliderLaberinto19 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider19.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto19 = glm::translate(modelMatrixColliderLaberinto19, meta->getObb().c);
+		modelMatrixColliderLaberinto19 = glm::translate(modelMatrixColliderLaberinto19, glm::vec3(524.0f, 5.0f, 346.0f));
+		laberintoCollider19.c = glm::vec3(modelMatrixColliderLaberinto19[3]);
+		laberintoCollider19.e = meta->getObb().e * glm::vec3(0.17, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto19", laberintoCollider19, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider20;
+		glm::mat4 modelMatrixColliderLaberinto20 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider20.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto20 = glm::translate(modelMatrixColliderLaberinto20, meta->getObb().c);
+		modelMatrixColliderLaberinto20 = glm::translate(modelMatrixColliderLaberinto20, glm::vec3(525.0f, 5.0f, 386.0f));
+		laberintoCollider20.c = glm::vec3(modelMatrixColliderLaberinto20[3]);
+		laberintoCollider20.e = meta->getObb().e * glm::vec3(0.11, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto20", laberintoCollider20, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider21;
+		glm::mat4 modelMatrixColliderLaberinto21 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider21.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto21 = glm::translate(modelMatrixColliderLaberinto21, meta->getObb().c);
+		modelMatrixColliderLaberinto21 = glm::translate(modelMatrixColliderLaberinto21, glm::vec3(525.0f, 5.0f, 420.0f));
+		laberintoCollider21.c = glm::vec3(modelMatrixColliderLaberinto21[3]);
+		laberintoCollider21.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto21", laberintoCollider21, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider22;
+		glm::mat4 modelMatrixColliderLaberinto22 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider22.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto22 = glm::translate(modelMatrixColliderLaberinto22, meta->getObb().c);
+		modelMatrixColliderLaberinto22 = glm::translate(modelMatrixColliderLaberinto22, glm::vec3(555.0f, 5.0f, 456.0f));
+		laberintoCollider22.c = glm::vec3(modelMatrixColliderLaberinto22[3]);
+		laberintoCollider22.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto22", laberintoCollider22, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider23;
+		glm::mat4 modelMatrixColliderLaberinto23 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider23.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto23 = glm::translate(modelMatrixColliderLaberinto23, meta->getObb().c);
+		modelMatrixColliderLaberinto23 = glm::translate(modelMatrixColliderLaberinto23, glm::vec3(586.0f, 5.0f, 493.0f));
+		laberintoCollider23.c = glm::vec3(modelMatrixColliderLaberinto23[3]);
+		laberintoCollider23.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto23", laberintoCollider23, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider24;
+		glm::mat4 modelMatrixColliderLaberinto24 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider24.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto24 = glm::translate(modelMatrixColliderLaberinto24, meta->getObb().c);
+		modelMatrixColliderLaberinto24 = glm::translate(modelMatrixColliderLaberinto24, glm::vec3(600.0f, 5.0f, 529.0f));
+		laberintoCollider24.c = glm::vec3(modelMatrixColliderLaberinto24[3]);
+		laberintoCollider24.e = meta->getObb().e * glm::vec3(0.03, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto24", laberintoCollider24, meta->matrix);
+
+		//ffffff
+
+		AbstractModel::OBB laberintoCollider25;
+		glm::mat4 modelMatrixColliderLaberinto25 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider25.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto25 = glm::translate(modelMatrixColliderLaberinto25, meta->getObb().c);
+		modelMatrixColliderLaberinto25 = glm::translate(modelMatrixColliderLaberinto25, glm::vec3(525.0f, 5.0f, 565.0f));
+		laberintoCollider25.c = glm::vec3(modelMatrixColliderLaberinto25[3]);
+		laberintoCollider25.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto25", laberintoCollider25, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider26;
+		glm::mat4 modelMatrixColliderLaberinto26 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider26.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto26 = glm::translate(modelMatrixColliderLaberinto26, meta->getObb().c);
+		modelMatrixColliderLaberinto26 = glm::translate(modelMatrixColliderLaberinto26, glm::vec3(525.0f, 5.0f, 601.0f));
+		laberintoCollider26.c = glm::vec3(modelMatrixColliderLaberinto26[3]);
+		laberintoCollider26.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto26", laberintoCollider26, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider27;
+		glm::mat4 modelMatrixColliderLaberinto27 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider27.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto27 = glm::translate(modelMatrixColliderLaberinto27, meta->getObb().c);
+		modelMatrixColliderLaberinto27 = glm::translate(modelMatrixColliderLaberinto27, glm::vec3(403.0f, 5.0f, 565.0f));
+		laberintoCollider27.c = glm::vec3(modelMatrixColliderLaberinto27[3]);
+		laberintoCollider27.e = meta->getObb().e * glm::vec3(0.12, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto27", laberintoCollider27, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider28;
+		glm::mat4 modelMatrixColliderLaberinto28 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider28.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto28 = glm::translate(modelMatrixColliderLaberinto28, meta->getObb().c);
+		modelMatrixColliderLaberinto28 = glm::translate(modelMatrixColliderLaberinto28, glm::vec3(433.0f, 5.0f, 601.0f));
+		laberintoCollider28.c = glm::vec3(modelMatrixColliderLaberinto28[3]);
+		laberintoCollider28.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto28", laberintoCollider28, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider29;
+		glm::mat4 modelMatrixColliderLaberinto29 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider29.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto29 = glm::translate(modelMatrixColliderLaberinto29, meta->getObb().c);
+		modelMatrixColliderLaberinto29 = glm::translate(modelMatrixColliderLaberinto29, glm::vec3(328.0f, 5.0f, 601.0f));
+		laberintoCollider29.c = glm::vec3(modelMatrixColliderLaberinto29[3]);
+		laberintoCollider29.e = meta->getObb().e * glm::vec3(0.03, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto29", laberintoCollider29, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider30;
+		glm::mat4 modelMatrixColliderLaberinto30 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider30.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto30 = glm::translate(modelMatrixColliderLaberinto30, meta->getObb().c);
+		modelMatrixColliderLaberinto30 = glm::translate(modelMatrixColliderLaberinto30, glm::vec3(735.0f, 5.0f, 601.0f));
+		laberintoCollider30.c = glm::vec3(modelMatrixColliderLaberinto30[3]);
+		laberintoCollider30.e = meta->getObb().e * glm::vec3(0.05, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto30", laberintoCollider30, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider31;
+		glm::mat4 modelMatrixColliderLaberinto31 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider31.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto31 = glm::translate(modelMatrixColliderLaberinto31, meta->getObb().c);
+		modelMatrixColliderLaberinto31 = glm::translate(modelMatrixColliderLaberinto31, glm::vec3(855.0f, 5.0f, 601.0f));
+		laberintoCollider31.c = glm::vec3(modelMatrixColliderLaberinto31[3]);
+		laberintoCollider31.e = meta->getObb().e * glm::vec3(0.11, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto31", laberintoCollider31, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider32;
+		glm::mat4 modelMatrixColliderLaberinto32 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider32.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto32 = glm::translate(modelMatrixColliderLaberinto32, meta->getObb().c);
+		modelMatrixColliderLaberinto32 = glm::translate(modelMatrixColliderLaberinto32, glm::vec3(887.0f, 5.0f, 565.0f));
+		laberintoCollider32.c = glm::vec3(modelMatrixColliderLaberinto32[3]);
+		laberintoCollider32.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto32", laberintoCollider32, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider33;
+		glm::mat4 modelMatrixColliderLaberinto33 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider33.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto33 = glm::translate(modelMatrixColliderLaberinto33, meta->getObb().c);
+		modelMatrixColliderLaberinto33 = glm::translate(modelMatrixColliderLaberinto33, glm::vec3(404.0f, 5.0f, 530.0f));
+		laberintoCollider33.c = glm::vec3(modelMatrixColliderLaberinto33[3]);
+		laberintoCollider33.e = meta->getObb().e * glm::vec3(0.06, 0.05, 0.01);
+		addOrUpdateColliders(collidersOBB, "laberinto33", laberintoCollider33, meta->matrix);
+		
+		AbstractModel::OBB laberintoCollider34;
+		glm::mat4 modelMatrixColliderLaberinto34 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider34.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto34 = glm::translate(modelMatrixColliderLaberinto34, meta->getObb().c);
+		modelMatrixColliderLaberinto34 = glm::translate(modelMatrixColliderLaberinto34, glm::vec3(280.0f, 5.0f, 440.0f));
+		laberintoCollider34.c = glm::vec3(modelMatrixColliderLaberinto34[3]);
+		laberintoCollider34.e = meta->getObb().e * glm::vec3(0.001, 0.05, 3.5);
+		addOrUpdateColliders(collidersOBB, "laberinto34", laberintoCollider34, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider35;
+		glm::mat4 modelMatrixColliderLaberinto35 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider35.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto35 = glm::translate(modelMatrixColliderLaberinto35, meta->getObb().c);
+		modelMatrixColliderLaberinto35 = glm::translate(modelMatrixColliderLaberinto35, glm::vec3(310.0f, 5.0f, 405.0f));
+		laberintoCollider35.c = glm::vec3(modelMatrixColliderLaberinto35[3]);
+		laberintoCollider35.e = meta->getObb().e * glm::vec3(0.001, 0.05, 2.5);
+		addOrUpdateColliders(collidersOBB, "laberinto35", laberintoCollider35, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider36;
+		glm::mat4 modelMatrixColliderLaberinto36 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider36.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto36 = glm::translate(modelMatrixColliderLaberinto36, meta->getObb().c);
+		modelMatrixColliderLaberinto36 = glm::translate(modelMatrixColliderLaberinto36, glm::vec3(310.0f, 5.0f, 660.0f));
+		laberintoCollider36.c = glm::vec3(modelMatrixColliderLaberinto36[3]);
+		laberintoCollider36.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.3);
+		addOrUpdateColliders(collidersOBB, "laberinto36", laberintoCollider36, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider37;
+		glm::mat4 modelMatrixColliderLaberinto37 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider37.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto37 = glm::translate(modelMatrixColliderLaberinto37, meta->getObb().c);
+		modelMatrixColliderLaberinto37 = glm::translate(modelMatrixColliderLaberinto37, glm::vec3(341.0f, 5.0f, 400.0f));
+		laberintoCollider37.c = glm::vec3(modelMatrixColliderLaberinto37[3]);
+		laberintoCollider37.e = meta->getObb().e * glm::vec3(0.001, 0.05, 2.0);
+		addOrUpdateColliders(collidersOBB, "laberinto37", laberintoCollider37, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider38;
+		glm::mat4 modelMatrixColliderLaberinto38 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider38.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto38 = glm::translate(modelMatrixColliderLaberinto38, meta->getObb().c);
+		modelMatrixColliderLaberinto38 = glm::translate(modelMatrixColliderLaberinto38, glm::vec3(341.0f, 5.0f, 640.0f));
+		laberintoCollider38.c = glm::vec3(modelMatrixColliderLaberinto38[3]);
+		laberintoCollider38.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.48);
+		addOrUpdateColliders(collidersOBB, "laberinto38", laberintoCollider38, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider39;
+		glm::mat4 modelMatrixColliderLaberinto39 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider39.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto39 = glm::translate(modelMatrixColliderLaberinto39, meta->getObb().c);
+		modelMatrixColliderLaberinto39 = glm::translate(modelMatrixColliderLaberinto39, glm::vec3(371.0f, 5.0f, 405.0f));
+		laberintoCollider39.c = glm::vec3(modelMatrixColliderLaberinto39[3]);
+		laberintoCollider39.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.6);
+		addOrUpdateColliders(collidersOBB, "laberinto39", laberintoCollider39, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider40;
+		glm::mat4 modelMatrixColliderLaberinto40 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider40.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto40 = glm::translate(modelMatrixColliderLaberinto40, meta->getObb().c);
+		modelMatrixColliderLaberinto40 = glm::translate(modelMatrixColliderLaberinto40, glm::vec3(371.0f, 5.0f, 625.0f));
+		laberintoCollider40.c = glm::vec3(modelMatrixColliderLaberinto40[3]);
+		laberintoCollider40.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.65);
+		addOrUpdateColliders(collidersOBB, "laberinto40", laberintoCollider40, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider41;
+		glm::mat4 modelMatrixColliderLaberinto41 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider41.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto41 = glm::translate(modelMatrixColliderLaberinto41, meta->getObb().c);
+		modelMatrixColliderLaberinto41 = glm::translate(modelMatrixColliderLaberinto41, glm::vec3(403.0f, 5.0f, 405.0f));
+		laberintoCollider41.c = glm::vec3(modelMatrixColliderLaberinto41[3]);
+		laberintoCollider41.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.2);
+		addOrUpdateColliders(collidersOBB, "laberinto41", laberintoCollider41, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider42;
+		glm::mat4 modelMatrixColliderLaberinto42 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider42.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto42 = glm::translate(modelMatrixColliderLaberinto42, meta->getObb().c);
+		modelMatrixColliderLaberinto42 = glm::translate(modelMatrixColliderLaberinto42, glm::vec3(403.0f, 5.0f, 645.0f));
+		laberintoCollider42.c = glm::vec3(modelMatrixColliderLaberinto42[3]);
+		laberintoCollider42.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.4);
+		addOrUpdateColliders(collidersOBB, "laberinto42", laberintoCollider42, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider43;
+		glm::mat4 modelMatrixColliderLaberinto43 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider43.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto43 = glm::translate(modelMatrixColliderLaberinto43, meta->getObb().c);
+		modelMatrixColliderLaberinto43 = glm::translate(modelMatrixColliderLaberinto43, glm::vec3(433.0f, 5.0f, 435.0f));
+		laberintoCollider43.c = glm::vec3(modelMatrixColliderLaberinto43[3]);
+		laberintoCollider43.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.1);
+		addOrUpdateColliders(collidersOBB, "laberinto43", laberintoCollider43, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider44;
+		glm::mat4 modelMatrixColliderLaberinto44 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider44.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto44 = glm::translate(modelMatrixColliderLaberinto44, meta->getObb().c);
+		modelMatrixColliderLaberinto44 = glm::translate(modelMatrixColliderLaberinto44, glm::vec3(433.0f, 5.0f, 655.0f));
+		laberintoCollider44.c = glm::vec3(modelMatrixColliderLaberinto44[3]);
+		laberintoCollider44.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.3);
+		addOrUpdateColliders(collidersOBB, "laberinto44", laberintoCollider44, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider45;
+		glm::mat4 modelMatrixColliderLaberinto45 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider45.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto45 = glm::translate(modelMatrixColliderLaberinto45, meta->getObb().c);
+		modelMatrixColliderLaberinto45 = glm::translate(modelMatrixColliderLaberinto45, glm::vec3(463.0f, 5.0f, 467.0f));
+		laberintoCollider45.c = glm::vec3(modelMatrixColliderLaberinto45[3]);
+		laberintoCollider45.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.1);
+		addOrUpdateColliders(collidersOBB, "laberinto45", laberintoCollider45, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider46;
+		glm::mat4 modelMatrixColliderLaberinto46 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider46.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto46 = glm::translate(modelMatrixColliderLaberinto46, meta->getObb().c);
+		modelMatrixColliderLaberinto46 = glm::translate(modelMatrixColliderLaberinto46, glm::vec3(463.0f, 5.0f, 645.0f));
+		laberintoCollider46.c = glm::vec3(modelMatrixColliderLaberinto46[3]);
+		laberintoCollider46.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.5);
+		addOrUpdateColliders(collidersOBB, "laberinto46", laberintoCollider46, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider47;
+		glm::mat4 modelMatrixColliderLaberinto47 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider47.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto47 = glm::translate(modelMatrixColliderLaberinto47, meta->getObb().c);
+		modelMatrixColliderLaberinto47 = glm::translate(modelMatrixColliderLaberinto47, glm::vec3(493.0f, 5.0f, 495.0f));
+		laberintoCollider47.c = glm::vec3(modelMatrixColliderLaberinto47[3]);
+		laberintoCollider47.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.85);
+		addOrUpdateColliders(collidersOBB, "laberinto47", laberintoCollider47, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider48;
+		glm::mat4 modelMatrixColliderLaberinto48 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider48.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto48 = glm::translate(modelMatrixColliderLaberinto48, meta->getObb().c);
+		modelMatrixColliderLaberinto48 = glm::translate(modelMatrixColliderLaberinto48, glm::vec3(493.0f, 5.0f, 645.0f));
+		laberintoCollider48.c = glm::vec3(modelMatrixColliderLaberinto48[3]);
+		laberintoCollider48.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.5);
+		addOrUpdateColliders(collidersOBB, "laberinto48", laberintoCollider48, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider49;
+		glm::mat4 modelMatrixColliderLaberinto49 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider49.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto49 = glm::translate(modelMatrixColliderLaberinto49, meta->getObb().c);
+		modelMatrixColliderLaberinto49 = glm::translate(modelMatrixColliderLaberinto49, glm::vec3(523.0f, 5.0f, 500.0f));
+		laberintoCollider49.c = glm::vec3(modelMatrixColliderLaberinto49[3]);
+		laberintoCollider49.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.4);
+		addOrUpdateColliders(collidersOBB, "laberinto49", laberintoCollider49, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider50;
+		glm::mat4 modelMatrixColliderLaberinto50 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider50.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto50 = glm::translate(modelMatrixColliderLaberinto50, meta->getObb().c);
+		modelMatrixColliderLaberinto50 = glm::translate(modelMatrixColliderLaberinto50, glm::vec3(523.0f, 5.0f, 660.0f));
+		laberintoCollider50.c = glm::vec3(modelMatrixColliderLaberinto50[3]);
+		laberintoCollider50.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.3);
+		addOrUpdateColliders(collidersOBB, "laberinto50", laberintoCollider50, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider51;
+		glm::mat4 modelMatrixColliderLaberinto51 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider51.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto51 = glm::translate(modelMatrixColliderLaberinto51, meta->getObb().c);
+		modelMatrixColliderLaberinto51 = glm::translate(modelMatrixColliderLaberinto51, glm::vec3(553.0f, 5.0f, 530.0f));
+		laberintoCollider51.c = glm::vec3(modelMatrixColliderLaberinto51[3]);
+		laberintoCollider51.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.4);
+		addOrUpdateColliders(collidersOBB, "laberinto51", laberintoCollider51, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider52;
+		glm::mat4 modelMatrixColliderLaberinto52 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider52.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto52 = glm::translate(modelMatrixColliderLaberinto52, meta->getObb().c);
+		modelMatrixColliderLaberinto52 = glm::translate(modelMatrixColliderLaberinto52, glm::vec3(553.0f, 5.0f, 640.0f));
+		laberintoCollider52.c = glm::vec3(modelMatrixColliderLaberinto52[3]);
+		laberintoCollider52.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.4);
+		addOrUpdateColliders(collidersOBB, "laberinto52", laberintoCollider52, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider53;
+		glm::mat4 modelMatrixColliderLaberinto53 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider53.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto53 = glm::translate(modelMatrixColliderLaberinto53, meta->getObb().c);
+		modelMatrixColliderLaberinto53 = glm::translate(modelMatrixColliderLaberinto53, glm::vec3(583.0f, 5.0f, 425.0f));
+		laberintoCollider53.c = glm::vec3(modelMatrixColliderLaberinto53[3]);
+		laberintoCollider53.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.38);
+		addOrUpdateColliders(collidersOBB, "laberinto53", laberintoCollider53, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider54;
+		glm::mat4 modelMatrixColliderLaberinto54 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider54.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto54 = glm::translate(modelMatrixColliderLaberinto54, meta->getObb().c);
+		modelMatrixColliderLaberinto54 = glm::translate(modelMatrixColliderLaberinto54, glm::vec3(583.0f, 5.0f, 580.0f));
+		laberintoCollider54.c = glm::vec3(modelMatrixColliderLaberinto54[3]);
+		laberintoCollider54.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.6);
+		addOrUpdateColliders(collidersOBB, "laberinto54", laberintoCollider54, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider55;
+		glm::mat4 modelMatrixColliderLaberinto55 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider55.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto55 = glm::translate(modelMatrixColliderLaberinto55, meta->getObb().c);
+		modelMatrixColliderLaberinto55 = glm::translate(modelMatrixColliderLaberinto55, glm::vec3(583.0f, 5.0f, 255.0f));
+		laberintoCollider55.c = glm::vec3(modelMatrixColliderLaberinto55[3]);
+		laberintoCollider55.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.6);
+		addOrUpdateColliders(collidersOBB, "laberinto55", laberintoCollider55, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider56;
+		glm::mat4 modelMatrixColliderLaberinto56 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider56.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto56 = glm::translate(modelMatrixColliderLaberinto56, meta->getObb().c);
+		modelMatrixColliderLaberinto56 = glm::translate(modelMatrixColliderLaberinto56, glm::vec3(613.0f, 5.0f, 420.0f));
+		laberintoCollider56.c = glm::vec3(modelMatrixColliderLaberinto56[3]);
+		laberintoCollider56.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.8);
+		addOrUpdateColliders(collidersOBB, "laberinto56", laberintoCollider56, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider57;
+		glm::mat4 modelMatrixColliderLaberinto57 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider57.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto57 = glm::translate(modelMatrixColliderLaberinto57, meta->getObb().c);
+		modelMatrixColliderLaberinto57 = glm::translate(modelMatrixColliderLaberinto57, glm::vec3(613.0f, 5.0f, 215.0f));
+		laberintoCollider57.c = glm::vec3(modelMatrixColliderLaberinto57[3]);
+		laberintoCollider57.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.7);
+		addOrUpdateColliders(collidersOBB, "laberinto57", laberintoCollider57, meta->matrix);
+
+		Model::OBB laberintoCollider58;
+		glm::mat4 modelMatrixColliderLaberinto58 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider58.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto58 = glm::translate(modelMatrixColliderLaberinto58, meta->getObb().c);
+		modelMatrixColliderLaberinto58 = glm::translate(modelMatrixColliderLaberinto58, glm::vec3(613.0f, 5.0f, 510.0f));
+		laberintoCollider58.c = glm::vec3(modelMatrixColliderLaberinto58[3]);
+		laberintoCollider58.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.15);
+		addOrUpdateColliders(collidersOBB, "laberinto58", laberintoCollider58, meta->matrix);
+
+		//mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+
+		AbstractModel::OBB laberintoCollider59;
+		glm::mat4 modelMatrixColliderLaberinto59 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider59.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto59 = glm::translate(modelMatrixColliderLaberinto59, meta->getObb().c);
+		modelMatrixColliderLaberinto59 = glm::translate(modelMatrixColliderLaberinto59, glm::vec3(643.0f, 5.0f, 400.0f));
+		laberintoCollider59.c = glm::vec3(modelMatrixColliderLaberinto59[3]);
+		laberintoCollider59.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.0);
+		addOrUpdateColliders(collidersOBB, "laberinto59", laberintoCollider59, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider60;
+		glm::mat4 modelMatrixColliderLaberinto60 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider60.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto60 = glm::translate(modelMatrixColliderLaberinto60, meta->getObb().c);
+		modelMatrixColliderLaberinto60 = glm::translate(modelMatrixColliderLaberinto60, glm::vec3(643.0f, 5.0f, 200.0f));
+		laberintoCollider60.c = glm::vec3(modelMatrixColliderLaberinto60[3]);
+		laberintoCollider60.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.4);
+		addOrUpdateColliders(collidersOBB, "laberinto60", laberintoCollider60, meta->matrix);
+
+		Model::OBB laberintoCollider61;
+		glm::mat4 modelMatrixColliderLaberinto61 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider61.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto61 = glm::translate(modelMatrixColliderLaberinto61, meta->getObb().c);
+		modelMatrixColliderLaberinto61 = glm::translate(modelMatrixColliderLaberinto61, glm::vec3(643.0f, 5.0f, 510.0f));
+		laberintoCollider61.c = glm::vec3(modelMatrixColliderLaberinto61[3]);
+		laberintoCollider61.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.15);
+		addOrUpdateColliders(collidersOBB, "laberinto61", laberintoCollider61, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider62;
+		glm::mat4 modelMatrixColliderLaberinto62 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider62.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto62 = glm::translate(modelMatrixColliderLaberinto62, meta->getObb().c);
+		modelMatrixColliderLaberinto62 = glm::translate(modelMatrixColliderLaberinto62, glm::vec3(673.0f, 5.0f, 580.0f));
+		laberintoCollider62.c = glm::vec3(modelMatrixColliderLaberinto62[3]);
+		laberintoCollider62.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.6);
+		addOrUpdateColliders(collidersOBB, "laberinto62", laberintoCollider62, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider63;
+		glm::mat4 modelMatrixColliderLaberinto63 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider63.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto63 = glm::translate(modelMatrixColliderLaberinto63, meta->getObb().c);
+		modelMatrixColliderLaberinto63 = glm::translate(modelMatrixColliderLaberinto63, glm::vec3(673.0f, 5.0f, 370.0f));
+		laberintoCollider63.c = glm::vec3(modelMatrixColliderLaberinto63[3]);
+		laberintoCollider63.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.0);
+		addOrUpdateColliders(collidersOBB, "laberinto63", laberintoCollider63, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider64;
+		glm::mat4 modelMatrixColliderLaberinto64 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider64.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto64 = glm::translate(modelMatrixColliderLaberinto64, meta->getObb().c);
+		modelMatrixColliderLaberinto64 = glm::translate(modelMatrixColliderLaberinto64, glm::vec3(703.0f, 5.0f, 530.0f));
+		laberintoCollider64.c = glm::vec3(modelMatrixColliderLaberinto64[3]);
+		laberintoCollider64.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.4);
+		addOrUpdateColliders(collidersOBB, "laberinto64", laberintoCollider64, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider65;
+		glm::mat4 modelMatrixColliderLaberinto65 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider65.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto65 = glm::translate(modelMatrixColliderLaberinto65, meta->getObb().c);
+		modelMatrixColliderLaberinto65 = glm::translate(modelMatrixColliderLaberinto65, glm::vec3(703.0f, 5.0f, 640.0f));
+		laberintoCollider65.c = glm::vec3(modelMatrixColliderLaberinto65[3]);
+		laberintoCollider65.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.4);
+		addOrUpdateColliders(collidersOBB, "laberinto65", laberintoCollider65, meta->matrix);
+
+		AbstractModel::OBB laberintoCollider66;
+		glm::mat4 modelMatrixColliderLaberinto66 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider66.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto66 = glm::translate(modelMatrixColliderLaberinto66, meta->getObb().c);
+		modelMatrixColliderLaberinto66 = glm::translate(modelMatrixColliderLaberinto66, glm::vec3(703.0f, 5.0f, 365.0f));
+		laberintoCollider66.c = glm::vec3(modelMatrixColliderLaberinto66[3]);
+		laberintoCollider66.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.6);
+		addOrUpdateColliders(collidersOBB, "laberinto66", laberintoCollider66, meta->matrix);
+
+		Model::OBB laberintoCollider67;
+		glm::mat4 modelMatrixColliderLaberinto67 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider67.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto67 = glm::translate(modelMatrixColliderLaberinto67, meta->getObb().c);
+		modelMatrixColliderLaberinto67 = glm::translate(modelMatrixColliderLaberinto67, glm::vec3(733.0f, 5.0f, 655.0f));
+		laberintoCollider67.c = glm::vec3(modelMatrixColliderLaberinto67[3]);
+		laberintoCollider67.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.25);
+		addOrUpdateColliders(collidersOBB, "laberinto67", laberintoCollider67, meta->matrix);
+
+		Model::OBB laberintoCollider68;
+		glm::mat4 modelMatrixColliderLaberinto68 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider68.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto68 = glm::translate(modelMatrixColliderLaberinto68, meta->getObb().c);
+		modelMatrixColliderLaberinto68 = glm::translate(modelMatrixColliderLaberinto68, glm::vec3(733.0f, 5.0f, 525.0f));
+		laberintoCollider68.c = glm::vec3(modelMatrixColliderLaberinto68[3]);
+		laberintoCollider68.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.85);
+		addOrUpdateColliders(collidersOBB, "laberinto68", laberintoCollider68, meta->matrix);
+
+		Model::OBB laberintoCollider69;
+		glm::mat4 modelMatrixColliderLaberinto69 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider69.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto69 = glm::translate(modelMatrixColliderLaberinto69, meta->getObb().c);
+		modelMatrixColliderLaberinto69 = glm::translate(modelMatrixColliderLaberinto69, glm::vec3(765.0f, 5.0f, 640.0f));
+		laberintoCollider69.c = glm::vec3(modelMatrixColliderLaberinto69[3]);
+		laberintoCollider69.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.5);
+		addOrUpdateColliders(collidersOBB, "laberinto69", laberintoCollider69, meta->matrix);
+
+		Model::OBB laberintoCollider70;
+		glm::mat4 modelMatrixColliderLaberinto70 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider70.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto70 = glm::translate(modelMatrixColliderLaberinto70, meta->getObb().c);
+		modelMatrixColliderLaberinto70 = glm::translate(modelMatrixColliderLaberinto70, glm::vec3(765.0f, 5.0f, 500.0f));
+		laberintoCollider70.c = glm::vec3(modelMatrixColliderLaberinto70[3]);
+		laberintoCollider70.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.9);
+		addOrUpdateColliders(collidersOBB, "laberinto70", laberintoCollider70, meta->matrix);
+
+		Model::OBB laberintoCollider71;
+		glm::mat4 modelMatrixColliderLaberinto71 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider71.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto71 = glm::translate(modelMatrixColliderLaberinto71, meta->getObb().c);
+		modelMatrixColliderLaberinto71 = glm::translate(modelMatrixColliderLaberinto71, glm::vec3(795.0f, 5.0f, 640.0f));
+		laberintoCollider71.c = glm::vec3(modelMatrixColliderLaberinto71[3]);
+		laberintoCollider71.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.5);
+		addOrUpdateColliders(collidersOBB, "laberinto71", laberintoCollider71, meta->matrix);
+
+		Model::OBB laberintoCollider72;
+		glm::mat4 modelMatrixColliderLaberinto72 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider72.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto72 = glm::translate(modelMatrixColliderLaberinto72, meta->getObb().c);
+		modelMatrixColliderLaberinto72 = glm::translate(modelMatrixColliderLaberinto72, glm::vec3(795.0f, 5.0f, 495.0f));
+		laberintoCollider72.c = glm::vec3(modelMatrixColliderLaberinto72[3]);
+		laberintoCollider72.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.3);
+		addOrUpdateColliders(collidersOBB, "laberinto72", laberintoCollider72, meta->matrix);
+
+		Model::OBB laberintoCollider73;
+		glm::mat4 modelMatrixColliderLaberinto73 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider73.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto73 = glm::translate(modelMatrixColliderLaberinto73, meta->getObb().c);
+		modelMatrixColliderLaberinto73 = glm::translate(modelMatrixColliderLaberinto73, glm::vec3(825.0f, 5.0f, 655.0f));
+		laberintoCollider73.c = glm::vec3(modelMatrixColliderLaberinto73[3]);
+		laberintoCollider73.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.3);
+		addOrUpdateColliders(collidersOBB, "laberinto73", laberintoCollider73, meta->matrix);
+
+		Model::OBB laberintoCollider74;
+		glm::mat4 modelMatrixColliderLaberinto74 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider74.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto74 = glm::translate(modelMatrixColliderLaberinto74, meta->getObb().c);
+		modelMatrixColliderLaberinto74 = glm::translate(modelMatrixColliderLaberinto74, glm::vec3(825.0f, 5.0f, 457.0f));
+		laberintoCollider74.c = glm::vec3(modelMatrixColliderLaberinto74[3]);
+		laberintoCollider74.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.4);
+		addOrUpdateColliders(collidersOBB, "laberinto74", laberintoCollider74, meta->matrix);
+
+		Model::OBB laberintoCollider75;
+		glm::mat4 modelMatrixColliderLaberinto75 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider75.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto75 = glm::translate(modelMatrixColliderLaberinto75, meta->getObb().c);
+		modelMatrixColliderLaberinto75 = glm::translate(modelMatrixColliderLaberinto75, glm::vec3(855.0f, 5.0f, 645.0f));
+		laberintoCollider75.c = glm::vec3(modelMatrixColliderLaberinto75[3]);
+		laberintoCollider75.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.5);
+		addOrUpdateColliders(collidersOBB, "laberinto75", laberintoCollider75, meta->matrix);
+
+		Model::OBB laberintoCollider76;
+		glm::mat4 modelMatrixColliderLaberinto76 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider76.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto76 = glm::translate(modelMatrixColliderLaberinto76, meta->getObb().c);
+		modelMatrixColliderLaberinto76 = glm::translate(modelMatrixColliderLaberinto76, glm::vec3(855.0f, 5.0f, 437.0f));
+		laberintoCollider76.c = glm::vec3(modelMatrixColliderLaberinto76[3]);
+		laberintoCollider76.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.6);
+		addOrUpdateColliders(collidersOBB, "laberinto76", laberintoCollider76, meta->matrix);
+
+		Model::OBB laberintoCollider77;
+		glm::mat4 modelMatrixColliderLaberinto77 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider77.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto77 = glm::translate(modelMatrixColliderLaberinto77, meta->getObb().c);
+		modelMatrixColliderLaberinto77 = glm::translate(modelMatrixColliderLaberinto77, glm::vec3(885.0f, 5.0f, 657.0f));
+		laberintoCollider77.c = glm::vec3(modelMatrixColliderLaberinto77[3]);
+		laberintoCollider77.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.3);
+		addOrUpdateColliders(collidersOBB, "laberinto77", laberintoCollider77, meta->matrix);
+
+		Model::OBB laberintoCollider78;
+		glm::mat4 modelMatrixColliderLaberinto78 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider78.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto78 = glm::translate(modelMatrixColliderLaberinto78, meta->getObb().c);
+		modelMatrixColliderLaberinto78 = glm::translate(modelMatrixColliderLaberinto78, glm::vec3(885.0f, 5.0f, 408.0f));
+		laberintoCollider78.c = glm::vec3(modelMatrixColliderLaberinto78[3]);
+		laberintoCollider78.e = meta->getObb().e * glm::vec3(0.001, 0.05, 1.6);
+		addOrUpdateColliders(collidersOBB, "laberinto78", laberintoCollider78, meta->matrix);
+
+		Model::OBB laberintoCollider79;
+		glm::mat4 modelMatrixColliderLaberinto79 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider79.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto79 = glm::translate(modelMatrixColliderLaberinto79, meta->getObb().c);
+		modelMatrixColliderLaberinto79 = glm::translate(modelMatrixColliderLaberinto79, glm::vec3(915.0f, 5.0f, 642.0f));
+		laberintoCollider79.c = glm::vec3(modelMatrixColliderLaberinto79[3]);
+		laberintoCollider79.e = meta->getObb().e * glm::vec3(0.001, 0.05, 0.5);
+		addOrUpdateColliders(collidersOBB, "laberinto79", laberintoCollider79, meta->matrix);
+
+		Model::OBB laberintoCollider80;
+		glm::mat4 modelMatrixColliderLaberinto80 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider80.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto80 = glm::translate(modelMatrixColliderLaberinto80, meta->getObb().c);
+		modelMatrixColliderLaberinto80 = glm::translate(modelMatrixColliderLaberinto80, glm::vec3(915.0f, 5.0f, 400.0f));
+		laberintoCollider80.c = glm::vec3(modelMatrixColliderLaberinto80[3]);
+		laberintoCollider80.e = meta->getObb().e * glm::vec3(0.001, 0.05, 2.0);
+		addOrUpdateColliders(collidersOBB, "laberinto80", laberintoCollider80, meta->matrix);
+
+		Model::OBB laberintoCollider81;
+		glm::mat4 modelMatrixColliderLaberinto81 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider81.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto81 = glm::translate(modelMatrixColliderLaberinto81, meta->getObb().c);
+		modelMatrixColliderLaberinto81 = glm::translate(modelMatrixColliderLaberinto81, glm::vec3(947.0f, 5.0f, 435.0f));
+		laberintoCollider81.c = glm::vec3(modelMatrixColliderLaberinto81[3]);
+		laberintoCollider81.e = meta->getObb().e * glm::vec3(0.001, 0.05, 3.0);
+		addOrUpdateColliders(collidersOBB, "laberinto81", laberintoCollider81, meta->matrix);
+
+		Model::OBB laberintoCollider82;
+		glm::mat4 modelMatrixColliderLaberinto82 = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		laberintoCollider82.u = glm::quat_cast(meta->matrix);
+		//modelMatrixColliderMeta = glm::scale(modelMatrixColliderMeta, glm::vec3(0.001, 0.001, 0.001));
+		modelMatrixColliderLaberinto82 = glm::translate(modelMatrixColliderLaberinto82, meta->getObb().c);
+		modelMatrixColliderLaberinto82 = glm::translate(modelMatrixColliderLaberinto82, glm::vec3(977.0f, 5.0f, 445.0f));
+		laberintoCollider82.c = glm::vec3(modelMatrixColliderLaberinto82[3]);
+		laberintoCollider82.e = meta->getObb().e * glm::vec3(0.001, 0.05, 3.7);
+		addOrUpdateColliders(collidersOBB, "laberinto82", laberintoCollider82, meta->matrix);
+
+		//******************************************************************************************************
 
 		// Collider de mayow
 		AbstractModel::OBB mayowCollider;
