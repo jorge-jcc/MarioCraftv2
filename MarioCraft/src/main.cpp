@@ -108,11 +108,15 @@ MarioCraftModel * fortaleza = new MarioCraftModel();
 MarioCraftModel * casa1 = new MarioCraftModel();
 MarioCraftModel * casa2 = new MarioCraftModel();
 MarioCraftModel * casa3 = new MarioCraftModel();
+MarioCraftModel * casa4 = new MarioCraftModel();
+MarioCraftModel * casa5 = new MarioCraftModel();
+MarioCraftModel * casa6 = new MarioCraftModel();
 MarioCraftModel * meta = new MarioCraftModel();
 MarioCraftModel * puente = new MarioCraftModel();
 MarioCraftModel * banca = new MarioCraftModel();
 MarioCraftModel * lamp = new MarioCraftModel();
 MarioCraftModel * laberinto = new MarioCraftModel();
+MarioCraftModel * torre = new MarioCraftModel();
 CasasToad * casita = new CasasToad();
 Arbol * arbol = new Arbol();
 Antorcha * antorcha = new Antorcha();
@@ -574,6 +578,46 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	laberinto->mcEnable(DEPTH);
 	models->addModel(laberinto);
 
+	torre->loadModel("../models/torre/torre.obj");
+	torre->setShader(&shaderMulLighting);
+	torre
+		->Init(glm::mat4(1.0f))
+		->Translate(-70.0f, -0.3f, -35.0f)
+		->Scale(40.0f, 40.0f, 40.0f);
+		//->Rotate(-90.0f, 0.f, 1.f, 0.f);
+	torre->mcEnable(DEPTH);
+	models->addModel(torre);
+
+	casa4->loadModel("../models/CasaMinecraft5/CasaMinecraft5.obj");
+	casa4->setShader(&shaderMulLighting);
+	casa4
+		->Init(glm::mat4(1.0f))
+		->Translate(-45.0f, 0.0f, -28.0f)
+		->Scale(30.0f, 30.0f, 30.0f)
+	    ->Rotate(90.0f, 0.f, 1.f, 0.f);
+	casa4->mcEnable(DEPTH);
+	models->addModel(casa4);
+
+	casa5->loadModel("../models/CasaMinecraft6/CasaMinecraft6.obj");
+	casa5->setShader(&shaderMulLighting);
+	casa5
+		->Init(glm::mat4(1.0f))
+		->Translate(-50.0f, -2.0f, -60.0f)
+		->Scale(20.0f, 20.0f, 20.0f)
+	    ->Rotate(-90.0f, 0.f, 1.f, 0.f);
+	casa5->mcEnable(DEPTH);
+	models->addModel(casa5);
+
+	casa6->loadModel("../models/CasaMinecraft7/CasaMinecraft7.obj");
+	casa6->setShader(&shaderMulLighting);
+	casa6
+		->Init(glm::mat4(1.0f))
+		->Translate(-80.0f, 0.0f, -60.0f)
+		->Scale(15.0f, 15.0f, 15.0f)
+		->Rotate(-90.0f, 0.f, 1.f, 0.f);
+	casa6->mcEnable(DEPTH);
+	models->addModel(casa6);
+
 	//MarioCraftModel* castillo = new MarioCraftModel("../models/Castillo/castillo.obj", &shaderMulLighting);
 	castillo->loadModel("../models/Castillo/castillo.obj");
 	castillo->setShader(&shaderMulLighting);
@@ -600,7 +644,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	casa1->setShader(&shaderMulLighting);
 	casa1
 		->Init(glm::mat4(1.0f))
-		->Translate(-85.f, 0.f, 50.f)
+		->Translate(-90.f, 0.f, 50.f)
 		->Scale(1.8f, 1.8f, 1.8f);
 	casa1->matrix[3][1] = terrain.getHeightTerrain(casa1->matrix[3][0], casa1->matrix[3][2]) - 5;
 	casa1->mcEnable(DEPTH);
@@ -610,7 +654,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	casa2->setShader(&shaderMulLighting);
 	casa2
 		->Init(glm::mat4(1.0f))
-		->Translate(-85.f, 0.f, 32.f)
+		->Translate(-90.f, 0.f, 15.f)
 		->Scale(0.5f, 0.5f, 0.5f);
 	casa2->matrix[3][1] = terrain.getHeightTerrain(casa2->matrix[3][0], casa2->matrix[3][2]) + 5.9f;
 	casa2->mcEnable(DEPTH);
@@ -620,7 +664,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	casa3->setShader(&shaderMulLighting);
 	casa3
 		->Init(glm::mat4(1.0f))
-		->Translate(-85.f, 0.f, 10.f)
+		->Translate(-90.f, 0.f, -10.f)
 		->Scale(10.0f, 10.0f, 10.0f);
 	casa3->matrix[3][1] = terrain.getHeightTerrain(casa3->matrix[3][0], casa3->matrix[3][2]) - 2.1;
 	casa3->mcEnable(DEPTH);
@@ -1626,6 +1670,199 @@ void applicationLoop() {
 		puenteColliderDer.e = puente->getObb().e * glm::vec3(5.9f, 6.0f, 0.5f);
 		addOrUpdateColliders(collidersOBB, "PuenteDer", puenteColliderDer, puente->matrix);
 
+		//casas
+
+		AbstractModel::OBB casa3Collider;
+		glm::mat4 modelMatrixColliderCasa3 = glm::mat4(casa3->matrix);
+		// Set the orientation of collider before doing the scale
+		casa3Collider.u = glm::quat_cast(casa3->matrix);
+		modelMatrixColliderCasa3 = glm::translate(modelMatrixColliderCasa3, casa3->getObb().c);
+		modelMatrixColliderCasa3 = glm::translate(modelMatrixColliderCasa3, glm::vec3(0.0f, 0.0f, 0.2f));
+		casa3Collider.c = glm::vec3(modelMatrixColliderCasa3[3]);
+		casa3Collider.e = casa3->getObb().e * glm::vec3(10.0f, 10.0f, 5.0f);
+		addOrUpdateColliders(collidersOBB, "Casa3", casa3Collider, casa3->matrix);
+
+		AbstractModel::OBB casa2Collider;
+		glm::mat4 modelMatrixColliderCasa2 = glm::mat4(casa2->matrix);
+		// Set the orientation of collider before doing the scale
+		casa2Collider.u = glm::quat_cast(casa2->matrix);
+		modelMatrixColliderCasa2 = glm::translate(modelMatrixColliderCasa2, casa2->getObb().c);
+		modelMatrixColliderCasa2 = glm::translate(modelMatrixColliderCasa2, glm::vec3(-2.4f, 0.0f, 2.5f));
+		casa2Collider.c = glm::vec3(modelMatrixColliderCasa2[3]);
+		casa2Collider.e = casa2->getObb().e * glm::vec3(0.35f, 0.5f, 0.35f);
+		addOrUpdateColliders(collidersOBB, "Casa2", casa2Collider, casa2->matrix);
+
+		AbstractModel::OBB casa1Collider;
+		glm::mat4 modelMatrixColliderCasa1 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa1Collider.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa1 = glm::translate(modelMatrixColliderCasa1, casa1->getObb().c);
+		modelMatrixColliderCasa1 = glm::translate(modelMatrixColliderCasa1, glm::vec3(0.0f, 0.0f, 0.0f));
+		casa1Collider.c = glm::vec3(modelMatrixColliderCasa1[3]);
+		casa1Collider.e = casa1->getObb().e * glm::vec3(1.5f, 1.8f, 1.5f);
+		addOrUpdateColliders(collidersOBB, "Casa1", casa1Collider, casa1->matrix);
+
+		AbstractModel::OBB casa6Collider;
+		glm::mat4 modelMatrixColliderCasa6 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa6Collider.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa6 = glm::translate(modelMatrixColliderCasa6, casa1->getObb().c);
+		modelMatrixColliderCasa6 = glm::translate(modelMatrixColliderCasa6, glm::vec3(1.0f, -2.0f, -58.5f));
+		casa6Collider.c = glm::vec3(modelMatrixColliderCasa6[3]);
+		casa6Collider.e = casa1->getObb().e * glm::vec3(1.2f, 1.8f, 1.55f);
+		addOrUpdateColliders(collidersOBB, "Casa6", casa6Collider, casa1->matrix);
+
+		AbstractModel::OBB torreCollider;
+		glm::mat4 modelMatrixCollidertorre = glm::mat4(torre->matrix);
+		// Set the orientation of collider before doing the scale
+		torreCollider.u = glm::quat_cast(torre->matrix);
+		modelMatrixCollidertorre = glm::translate(modelMatrixCollidertorre, torre->getObb().c);
+		modelMatrixCollidertorre = glm::translate(modelMatrixCollidertorre, glm::vec3(0.0f, -0.47f, 0.0f));
+		torreCollider.c = glm::vec3(modelMatrixCollidertorre[3]);
+		torreCollider.e = torre->getObb().e * glm::vec3(36.0f, 1.0f, 36.0f);
+		addOrUpdateColliders(collidersOBB, "torre", torreCollider, torre->matrix);
+
+		AbstractModel::OBB casa5Collider;
+		glm::mat4 modelMatrixColliderCasa5 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa5Collider.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa5 = glm::translate(modelMatrixColliderCasa5, casa1->getObb().c);
+		modelMatrixColliderCasa5 = glm::translate(modelMatrixColliderCasa5, glm::vec3(22.0f, -4.0f, -61.0f));
+		casa5Collider.c = glm::vec3(modelMatrixColliderCasa5[3]);
+		casa5Collider.e = casa1->getObb().e * glm::vec3(3.5f, 0.7f, 2.5f);
+		addOrUpdateColliders(collidersOBB, "Casa5", casa5Collider, casa1->matrix);
+		
+		AbstractModel::OBB casa4Collider;
+		glm::mat4 modelMatrixColliderCasa4 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa4 = glm::translate(modelMatrixColliderCasa4, casa1->getObb().c);
+		modelMatrixColliderCasa4 = glm::translate(modelMatrixColliderCasa4, glm::vec3(24.5f, 0.2f, -41.4f));
+		casa4Collider.c = glm::vec3(modelMatrixColliderCasa4[3]);
+		casa4Collider.e = casa1->getObb().e * glm::vec3(1.7f, 0.09f, 1.7f);
+		addOrUpdateColliders(collidersOBB, "Casa4", casa4Collider, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider1;
+		glm::mat4 modelMatrixColliderCasa41 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider1.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa41 = glm::translate(modelMatrixColliderCasa41, casa1->getObb().c);
+		modelMatrixColliderCasa41 = glm::translate(modelMatrixColliderCasa41, glm::vec3(22.7f, -2.5f, -37.0f));
+		casa4Collider1.c = glm::vec3(modelMatrixColliderCasa41[3]);
+		casa4Collider1.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.1", casa4Collider1, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider2;
+		glm::mat4 modelMatrixColliderCasa42 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider2.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa42 = glm::translate(modelMatrixColliderCasa42, casa1->getObb().c);
+		modelMatrixColliderCasa42 = glm::translate(modelMatrixColliderCasa42, glm::vec3(23.0f, -2.2f, -37.0f));
+		casa4Collider2.c = glm::vec3(modelMatrixColliderCasa42[3]);
+		casa4Collider2.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.2", casa4Collider2, casa1->matrix);
+		
+		AbstractModel::OBB casa4Collider3;
+		glm::mat4 modelMatrixColliderCasa43 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider3.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa43 = glm::translate(modelMatrixColliderCasa43, casa1->getObb().c);
+		modelMatrixColliderCasa43 = glm::translate(modelMatrixColliderCasa43, glm::vec3(23.3f, -1.9f, -37.0f));
+		casa4Collider3.c = glm::vec3(modelMatrixColliderCasa43[3]);
+		casa4Collider3.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.3", casa4Collider3, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider4;
+		glm::mat4 modelMatrixColliderCasa44 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider4.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa44 = glm::translate(modelMatrixColliderCasa44, casa1->getObb().c);
+		modelMatrixColliderCasa44 = glm::translate(modelMatrixColliderCasa44, glm::vec3(23.6f, -1.6f, -37.0f));
+		casa4Collider4.c = glm::vec3(modelMatrixColliderCasa44[3]);
+		casa4Collider4.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.4", casa4Collider4, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider5;
+		glm::mat4 modelMatrixColliderCasa45 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider5.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa45 = glm::translate(modelMatrixColliderCasa45, casa1->getObb().c);
+		modelMatrixColliderCasa45 = glm::translate(modelMatrixColliderCasa45, glm::vec3(23.9f, -1.3f, -37.0f));
+		casa4Collider5.c = glm::vec3(modelMatrixColliderCasa45[3]);
+		casa4Collider5.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.5", casa4Collider5, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider6;
+		glm::mat4 modelMatrixColliderCasa46 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider6.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa46 = glm::translate(modelMatrixColliderCasa46, casa1->getObb().c);
+		modelMatrixColliderCasa46 = glm::translate(modelMatrixColliderCasa46, glm::vec3(24.2f, -1.0f, -37.0f));
+		casa4Collider6.c = glm::vec3(modelMatrixColliderCasa46[3]);
+		casa4Collider6.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.6", casa4Collider6, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider7;
+		glm::mat4 modelMatrixColliderCasa47 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider7.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa47 = glm::translate(modelMatrixColliderCasa47, casa1->getObb().c);
+		modelMatrixColliderCasa47 = glm::translate(modelMatrixColliderCasa47, glm::vec3(24.5f, -0.7f, -37.0f));
+		casa4Collider7.c = glm::vec3(modelMatrixColliderCasa47[3]);
+		casa4Collider7.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.7", casa4Collider7, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider8;
+		glm::mat4 modelMatrixColliderCasa48 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider8.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa48 = glm::translate(modelMatrixColliderCasa48, casa1->getObb().c);
+		modelMatrixColliderCasa48 = glm::translate(modelMatrixColliderCasa48, glm::vec3(24.8f, -0.4f, -37.0f));
+		casa4Collider8.c = glm::vec3(modelMatrixColliderCasa48[3]);
+		casa4Collider8.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.8", casa4Collider8, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider9;
+		glm::mat4 modelMatrixColliderCasa49 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider9.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa49 = glm::translate(modelMatrixColliderCasa49, casa1->getObb().c);
+		modelMatrixColliderCasa49 = glm::translate(modelMatrixColliderCasa49, glm::vec3(25.1f, -0.1f, -37.0f));
+		casa4Collider9.c = glm::vec3(modelMatrixColliderCasa49[3]);
+		casa4Collider9.e = casa1->getObb().e * glm::vec3(0.1f, 0.1f, 0.3f);
+		addOrUpdateColliders(collidersOBB, "Casa4.9", casa4Collider9, casa1->matrix);
+
+		AbstractModel::OBB casa4Collider10;
+		glm::mat4 modelMatrixColliderCasa410 = glm::mat4(casa1->matrix);
+		// Set the orientation of collider before doing the scale
+		casa4Collider10.u = glm::quat_cast(casa1->matrix);
+		modelMatrixColliderCasa410 = glm::translate(modelMatrixColliderCasa410, casa1->getObb().c);
+		modelMatrixColliderCasa410 = glm::translate(modelMatrixColliderCasa410, glm::vec3(26.0f, 0.2f, -37.0f));
+		casa4Collider10.c = glm::vec3(modelMatrixColliderCasa410[3]);
+		casa4Collider10.e = casa1->getObb().e * glm::vec3(0.4f, 0.1f, 0.4f);
+		addOrUpdateColliders(collidersOBB, "Casa4.10", casa4Collider10, casa1->matrix);
+
+		AbstractModel::OBB fortalezaCollider;
+		glm::mat4 modelMatrixColliderFortaleza = glm::mat4(fortaleza->matrix);
+		// Set the orientation of collider before doing the scale
+		fortalezaCollider.u = glm::quat_cast(fortaleza->matrix);
+		modelMatrixColliderFortaleza = glm::translate(modelMatrixColliderFortaleza, fortaleza->getObb().c);
+		modelMatrixColliderFortaleza = glm::translate(modelMatrixColliderFortaleza, glm::vec3(-2.0f, 0.0f, 0.0f));
+		fortalezaCollider.c = glm::vec3(modelMatrixColliderFortaleza[3]);
+		fortalezaCollider.e = fortaleza->getObb().e * glm::vec3(1.2f, 2.f, 1.9f);
+		addOrUpdateColliders(collidersOBB, "fortaleza", fortalezaCollider, fortaleza->matrix);
+
+		AbstractModel::OBB fortaleza1Collider;
+		glm::mat4 modelMatrixColliderFortaleza1 = glm::mat4(fortaleza->matrix);
+		// Set the orientation of collider before doing the scale
+		fortaleza1Collider.u = glm::quat_cast(fortaleza->matrix);
+		modelMatrixColliderFortaleza1 = glm::translate(modelMatrixColliderFortaleza1, fortaleza->getObb().c);
+		modelMatrixColliderFortaleza1 = glm::translate(modelMatrixColliderFortaleza1, glm::vec3(3.0f, 0.0f, 0.3f));
+		fortaleza1Collider.c = glm::vec3(modelMatrixColliderFortaleza1[3]);
+		fortaleza1Collider.e = fortaleza->getObb().e * glm::vec3(0.6f, 2.f, 1.1f);
+		addOrUpdateColliders(collidersOBB, "fortaleza1", fortaleza1Collider, fortaleza->matrix);
+
+
 
 		//Collider Laberinto *****************************************************************************
 		AbstractModel::OBB laberintoCollider0;
@@ -2556,8 +2793,7 @@ void applicationLoop() {
 		// Collider de mayow
 		AbstractModel::OBB mayowCollider;
 		glm::mat4 modelmatrixColliderMayow = glm::mat4(modelMatrixMayow);
-		modelmatrixColliderMayow = glm::rotate(modelmatrixColliderMayow,
-			glm::radians(-90.0f), glm::vec3(1, 0, 0));
+		modelmatrixColliderMayow = glm::rotate(modelmatrixColliderMayow,glm::radians(-90.0f), glm::vec3(1, 0, 0));
 		// Set the orientation of collider before doing the scale
 		mayowCollider.u = glm::quat_cast(modelmatrixColliderMayow);
 		modelmatrixColliderMayow = glm::scale(modelmatrixColliderMayow, glm::vec3(0.021, 0.021, 0.021));
