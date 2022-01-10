@@ -29,6 +29,8 @@
     <ClCompile Include="src\sources\MarioCraftModel.cpp" />
     <ClCompile Include="src\sources\MarioCraftTexture.cpp" />
     <ClCompile Include="src\sources\ModelManager.cpp" />
+    <ClCompile Include="src\sources\Moneda.cpp" />
+    <ClCompile Include="src\sources\Roca.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\Antorcha.h" />
@@ -41,6 +43,8 @@
     <ClInclude Include="src\headers\MarioCraftModel.h" />
     <ClInclude Include="src\headers\MarioCraftTexture.h" />
     <ClInclude Include="src\headers\ModelManager.h" />
+    <ClInclude Include="src\headers\Moneda.h" />
+    <ClInclude Include="src\headers\Roca.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -59,6 +59,8 @@
 #include "Arbol.h"
 #include "Antorcha.h"
 #include "Lampara.h"
+#include "Moneda.h"
+#include "Roca.h"
 //#include "Dragon.h"
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
@@ -123,6 +125,11 @@ CasasToad * casita = new CasasToad();
 Arbol * arbol = new Arbol();
 Antorcha * antorcha = new Antorcha();
 Lampara * lampara = new Lampara();
+Moneda * moneda = new Moneda();
+Roca* roca = new Roca();
+
+int puntos = 0;
+int vida = 100;
 
 // Mayow
 Model spiderModelAnimate;
@@ -560,6 +567,11 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	banca->mcEnable(DEPTH);
 	models->addModel(banca);
 
+	roca->Load(&shaderMulLighting);
+	roca->InitMatrices(&terrain);
+	models->addModel(roca);
+	
+
 	laberinto->loadModel("../models/laberinto/laberinto.obj");
 	laberinto->setShader(&shaderMulLighting);
 	laberinto
@@ -742,6 +754,177 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	// ---------------------------------------------------------------------------
 	// Antorchas
+	vector<float> moneditas = {
+		// Puente
+		-10.f,  3.f,  -40.f,
+
+		// Bosque de atrás
+		-25.f,  1.0f,  65.f,
+		-32.f,  0.3f,  74.f,
+		-42.f,  1.0f,  78.f,
+		-33.f,  0.2f,  87.f,
+		-23.f,  0.7f,  92.f,
+		-50.f,  0.5f,  85.f,
+		-65.f,  1.0f,  77.f,
+		-86.f,  0.3f,  72.f,
+		-93.f,  0.9f,  66.f,
+		-93.f,  0.6f,  66.f,
+		-91.f,  0.4f,  78.f,
+		-89.f,  1.0f,  88.f,
+		-74.f,  0.8f,  86.f,
+		-74.f,  0.7f,  86.f,
+		-52.f,  1.0f,  80.f,
+
+		// Laberinto
+		60.f, 0.5f, 40.f,
+		60.f, 0.5f, 47.f,
+		75.f, 0.5f, 47.f,
+		90.f, 0.5f, 47.f,
+		90.f, 0.5f, 64.f,
+		90.f, 0.5f, 64.f,
+		90.f, 0.5f, 80.f,
+		87.f, 0.5f, 73.f,
+		87.f, 0.5f, 54.f,
+		73.f, 0.5f, 67.f,
+		77.f, 0.5f, 95.f,
+		77.f, 0.5f, 63.f,
+		70.f, 0.5f, 60.f,
+		80.f, 0.5f, 83.f,
+		83.f, 0.5f, 56.f,
+		83.f, 0.5f, 75.f,
+		96.f, 0.5f, 96.f,
+		96.f, 0.5f, 69.f,
+		97.f, 0.5f, 40.f,
+		63.f, 0.5f, 42.f,
+		93.f, 0.5f, 43.f,
+		93.f, 0.5f, 69.f,
+		93.f, 0.5f, 82.f,
+		83.f, 0.5f, 87.f,
+		43.f, 0.5f, 84.f,
+		33.f, 0.5f, 96.f,
+		24.f, 0.5f, 96.f,
+		30.f, 0.5f, 84.f,
+		34.f, 0.5f, 84.f,
+		24.f, 0.5f, 64.f,
+		24.f, 0.5f, 40.f,
+		73.f, 0.5f, 72.f,
+		67.f, 0.5f, 83.f,
+		63.f, 0.5f, 75.f,
+		53.f, 0.5f, 91.f,
+		53.f, 0.5f, 84.f,
+		53.f, 0.5f, 75.f,
+		53.f, 0.5f, 67.f,
+		48.f, 0.5f, 90.f,
+		56.f, 0.5f, 59.f,
+		40.f, 0.5f, 59.f,
+		35.f, 0.5f, 79.f,
+		30.f, 0.5f, 47.f,
+		53.f, 0.5f, 47.f,
+		53.f, 0.5f, 43.f,
+		27.f, 0.5f, 43.f,
+		27.f, 0.5f, 64.f,
+		27.f, 0.5f, 83.f,
+		33.f, 0.5f, 83.f,
+		37.f, 0.5f, 56.f,
+		60.f, 0.5f, 62.f,
+		60.f, 0.5f, 75.f,
+
+		07.f, 0.5f, -13.f,
+		27.f, 0.5f, -13.f,
+		35.f, 0.5f, -20.f,
+		35.f, 0.5f, -35.f,
+		18.f, 0.5f, -43.f,
+		07.f, 0.5f, -28.f,
+		26.f, 0.5f, -28.f,
+	   -33.f, 0.5f, -27.f,
+	   -33.f, 0.5f,   2.f,
+	   -17.f, 0.5f,   2.f,
+	   -17.f, 0.5f, -19.f,
+	   -17.f, 0.5f, -49.f,
+
+		// Castillo
+	   -24.f, 0.5f, -97.f,
+	   -24.f, 0.5f, -87.f,
+	   -24.f, 0.5f, -71.f,
+	   -10.f, 0.5f, -71.f,
+	    06.f, 0.5f, -71.f,
+	    18.f, 0.5f, -84.f,
+	    18.f, 0.5f, -97.f,
+	    31.f, 0.5f, -77.f,
+	    24.f, 0.5f, -75.f,
+	    25.f, 0.5f, -82.f,
+	    40.f, 0.5f, -90.f,
+	    52.f, 0.5f, -84.f,
+	    53.f, 0.5f, -71.f,
+	    69.f, 0.5f, -77.f,
+	    82.f, 0.5f, -87.f,
+	    91.f, 0.5f, -96.f,
+	    93.f, 0.5f, -83.f,
+	    85.f, 0.5f, -75.f,
+	    42.f, 0.5f, -78.f,
+	    64.f, 0.5f, -84.f,
+	    67.f, 0.5f, -96.f,
+		30.f, 0.5f, -96.f,
+
+		// Bosque Izquierdo
+	    -33.f, 0.5f, -75.f,
+	    -33.f, 0.5f, -75.f,
+	    -33.f, 0.5f, -87.f,
+	    -33.f, 0.5f, -96.f,
+	    -39.f, 0.5f, -84.f,
+	    -37.f, 0.5f, -78.f,
+	    -44.f, 0.5f, -75.f,
+	    -48.f, 0.5f, -84.f,
+	    -48.f, 0.5f, -90.f,
+	    -54.f, 0.5f, -93.f,
+	    -54.f, 0.5f, -81.f,
+	    -58.f, 0.5f, -90.f,
+	    -60.f, 0.5f, -78.f,
+	    -75.f, 0.5f, -77.f,
+	    -78.f, 0.5f, -93.f,
+	    -96.f, 0.5f, -84.f,
+	    -90.f, 0.5f, -75.f,
+	    -95.f, 0.5f, -71.f,
+	    -96.f, 0.5f, -96.f,
+	    -78.f, 0.5f, -81.f,
+
+		// Colonia 2
+		74.f, 0.5f, -52.f,
+		74.f, 0.5f, -38.f,
+		74.f, 0.5f, -22.f,
+		74.f, 0.5f,  09.f,
+		93.f, 0.5f,  09.f,
+		93.f, 0.5f, -07.f,
+		93.f, 0.5f, -22.f,
+		93.f, 0.5f, -37.f,
+		93.f, 0.5f, -51.f,
+		93.f, 0.5f, -66.f,
+		55.f, 0.5f, -44.f,
+		55.f, 0.5f, -14.f,
+
+		71.f, 0.5f, 13.f,
+		71.f, 0.5f, 20.f,
+		71.f, 0.5f, 27.f,
+
+	   -76.f, 0.5f, 49.f,
+	   -85.f, 0.5f, 40.f,
+	   -77.f, 0.5f, 34.f,
+	   -87.f, 0.5f, 22.f,
+
+		
+
+
+
+
+
+	};
+	moneda->Load(&shaderMulLighting);
+	moneda->InitMatrices(moneditas, &terrain);
+	models->addModel(moneda);
+
+
+	// ---------------------------------------------------------------------------
+	// Antorchas
 	vector<float> antorchitas = {
 		-70.f, 22.f,
 		-70.f, 41.f,
@@ -755,6 +938,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// ---------------------------------------------------------------------------
 	// Lamparas
 	vector<float> lamparitas = {
+		/*
 		-14.0f, -0.0f,
 		-14.0f, -22.5f,
 		//-14.0f, -30.0f,
@@ -766,7 +950,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		//-0.7f, -30.0f,
 		-0.7f, -45.0f,
 		*/
-
+		/*
 		17.f, -0.0f,
 		//17.f, -15.0f,
 		17.f, -22.5f,
@@ -778,13 +962,13 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		59.5f, -38.5f,
 		59.5f, -53.5f,
 		*/ 
-
+		/*
 		76.f,   7.5f,
 		76.f, -12.5f,
 		76.f, -32.5f,
 		76.f, -52.5f,
 
-
+		*/
 	};
 	lampara->Load(&shaderMulLighting);
 	lampara->InitMatrices(lamparitas, &terrain);
@@ -1162,6 +1346,11 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, -0.2));
 		animationIndex = 4;
+	}
+	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+		cout << endl;
+		cout << glm::to_string(modelMatrixSpider[3]) << endl;
+		cout << endl;
 	}
 
 	bool keySpaceStatus = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
@@ -2701,6 +2890,43 @@ void applicationLoop() {
 		spiderCollider.c = glm::vec3(modelmatrixColliderSpider[3]);
 		addOrUpdateColliders(collidersOBB, "spider", spiderCollider, modelMatrixSpider);
 
+		//***************************************************************************
+		// Collider Monedas
+		for (std::map<string, glm::mat4>::iterator it = moneda->matrices.begin(); it != moneda->matrices.end(); it++) {
+			AbstractModel::SBB monedaCollider;
+			glm::mat4 modelMatrixColliderMoneda = glm::mat4(it->second);
+			modelMatrixColliderMoneda = glm::translate(modelMatrixColliderMoneda, glm::vec3(0.f, 0.f, 0.f));
+			modelMatrixColliderMoneda = glm::translate(modelMatrixColliderMoneda, moneda->getSbb().c);
+			monedaCollider.c = modelMatrixColliderMoneda[3];
+			monedaCollider.ratio = moneda->getSbb().ratio;
+			addOrUpdateColliders(collidersSBB, it->first, monedaCollider, it->second);
+		}
+
+		//---------------------------------------------------------------------
+		// Collider Roca
+		if (roca->show) {
+			AbstractModel::SBB rocaCollider;
+			glm::mat4 modelMatrixColliderMoneda = glm::mat4(roca->matrix);
+			modelMatrixColliderMoneda = glm::translate(modelMatrixColliderMoneda, glm::vec3(0.f, -.3f, 0.f));
+			modelMatrixColliderMoneda = glm::scale(modelMatrixColliderMoneda, glm::vec3(0.3f, 0.3f, 0.3f));
+			modelMatrixColliderMoneda = glm::translate(modelMatrixColliderMoneda, moneda->getSbb().c);
+			rocaCollider.c = modelMatrixColliderMoneda[3];
+			rocaCollider.ratio = roca->getSbb().ratio * 0.3f;
+			addOrUpdateColliders(collidersSBB, "roca", rocaCollider, roca->matrix);
+		}
+		
+		//---------------------------------------------------------------------
+		// Collider Eventos Roca
+		AbstractModel::OBB rocaEventCollider0;
+		glm::mat4 modelMatrixColliderRocaEvent = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		rocaEventCollider0.u = glm::quat_cast(meta->matrix);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, meta->getObb().c);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, glm::vec3(640.f, 5.0f, 255.f));
+		rocaEventCollider0.c = glm::vec3(modelMatrixColliderRocaEvent[3]);
+		rocaEventCollider0.e = meta->getObb().e * glm::vec3(0.001, .05f, .18f);
+		addOrUpdateColliders(collidersOBB, "rocaEvent-0", rocaEventCollider0, meta->matrix);
+
 		/*******************************************
 		 * Render de colliders
 		 *******************************************/
@@ -2747,6 +2973,10 @@ void applicationLoop() {
 							isPlataform = true;
 							platformHeight = std::get<1>(jt->second)[3][1];
 						}
+						else if (jt->first.find("rocaEvent-") == 0) {
+							roca->InitMatrices(&terrain);
+							roca->show = true;
+						}
 						else
 							isCollision = true;
 					}
@@ -2766,8 +2996,7 @@ void applicationLoop() {
 				if (it != jt
 					&& testSphereSphereIntersection(std::get<0>(it->second),
 						std::get<0>(jt->second))) {
-					std::cout << "Colision " << it->first << " with "
-						<< jt->first << std::endl;
+					//std::cout << "Colision " << it->first << " with " << jt->first << std::endl;
 					isCollision = true;
 				}
 			}
@@ -2784,9 +3013,29 @@ void applicationLoop() {
 			for (; jt != collidersOBB.end(); jt++) {
 				if (testSphereOBox(std::get<0>(it->second),
 					std::get<0>(jt->second))) {
-					std::cout << "Colision " << it->first << " with "
-						<< jt->first << std::endl;
-					isCollision = true;
+					//std::cout << "Colision " << it->first << " with " << jt->first << std::endl;
+					if (jt->first.compare("mayow") == 0) {
+						if (it->first.find("moneda-") == 0) {
+							moneda->removeMoneda(it->first);
+							collidersSBB.erase(it->first);
+							puntos++;
+						}
+						else if (it->first.compare("roca") == 0) {
+							roca->show = false;
+							collidersSBB.erase(it->first);
+							vida--;
+						}
+						else
+							isCollision = true;
+					}
+					else if (it->first.compare("roca") == 0) {
+						if (jt->first.find("rocaEvent-") == 0) {
+							roca->show = false;
+							collidersSBB.erase(it->first);
+						}
+					}
+					else
+						isCollision = true;
 					addOrUpdateCollisionDetection(collisionDetection, jt->first, isCollision);
 				}
 			}
@@ -2944,6 +3193,7 @@ void renderScene(bool renderParticles) {
 	// Forze to enable the unit texture to 0 always ----------------- IMPORTANT
 	//glActiveTexture(GL_TEXTURE0);
 
+	models->updateModels();
 	models->renderModels();
 
 	/*******************************************
