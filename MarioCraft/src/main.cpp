@@ -129,7 +129,9 @@ Moneda * moneda = new Moneda();
 Roca* roca = new Roca();
 
 int puntos = 0;
-int vida = 100;
+int vidaMaxima = 100;
+int vidaActual = vidaMaxima;
+float velocidad = .4f;
 
 // Mayow
 Model spiderModelAnimate;
@@ -235,7 +237,7 @@ double currTime, lastTime;
 
 // Jump variables
 bool isJump = false;
-float GRAVITY = 3.5;
+float GRAVITY = 1.8;
 double tmv = 0;
 double startTimeJump = 0;
 
@@ -936,6 +938,12 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	   -77.f, 0.5f, 34.f,
 	   -87.f, 0.5f, 22.f,
 
+	   -40.5f, 7.f, -20.f,
+	   -40.5f, 7.f, -22.f,
+	   -40.5f, 7.f, -24.f,
+	   -40.5f, 7.f, -26.f,
+	   -40.5f, 7.f, -28.f,
+	   -40.5f, 7.f, -30.f,
 		
 
 
@@ -1377,12 +1385,12 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && !isJump) {
 		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(-3.0f), glm::vec3(0, 1, 0));
 		animationIndex = 2;
-	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && !isJump) {
-		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, 0.4));
+	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, velocidad));
 		animationIndex = 3;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && !isJump) {
-		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, -0.4));
+		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, -velocidad));
 		animationIndex = 2;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
@@ -3025,7 +3033,7 @@ void applicationLoop() {
 
 		/*******************************************
 		 * Render de colliders
-		 *******************************************/
+		
 		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> >::iterator it =
 			collidersOBB.begin(); it != collidersOBB.end(); it++) {
 			glm::mat4 matrixCollider = glm::mat4(1.0);
@@ -3046,6 +3054,7 @@ void applicationLoop() {
 			sphereCollider.enableWireMode();
 			sphereCollider.render(matrixCollider);
 		}
+		 *******************************************/
 
 		/*******************************************
 		 * Test Colisions
@@ -3062,15 +3071,37 @@ void applicationLoop() {
 				if (it != jt
 					&& testOBBOBB(std::get<0>(it->second),
 						std::get<0>(jt->second))) {
-					std::cout << "Colision " << it->first << " with "
-						<< jt->first << std::endl;
+					//std::cout << "Colision " << it->first << " with " << jt->first << std::endl;
 					if (it->first.compare("spider") == 0){ 
 						if (jt->first.compare("PuentePiso") == 0) {
 							isPlataform = true;
 							platformHeight = std::get<1>(jt->second)[3][1];
 						}
+						else if (jt->first.find("Casa4") == 0 || jt->first.find("torre") == 0 
+							|| jt->first.find("Casa5") == 0
+						) {
+							isPlataform = true;
+							platformHeight = modelMatrixSpider[3][1];
+						}
 						else if (jt->first.find("rocaEvent-") == 0) {
 							roca->InitMatrices(roquitas.find(jt->first)->second, &terrain);
+						}
+						else if (jt->first.find("juggerNog") == 0) {
+							vidaMaxima = 200;
+							vidaActual = vidaMaxima;
+							isCollision = true;
+						}
+						else if (jt->first.find("doubleTap") == 0) {
+							GRAVITY = 1.f;
+							isCollision = true;
+						}
+						else if (jt->first.find("quickRevive") == 0) {
+							vidaActual = vidaMaxima;
+							isCollision = true;
+						}
+						else if (jt->first.find("speedCola") == 0) {
+							velocidad = .6f;
+							isCollision = true;
 						}
 						else
 							isCollision = true;
@@ -3080,7 +3111,7 @@ void applicationLoop() {
 			}
 			addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
 		}
-
+		cout << "vel:" << velocidad << " vida: " << vidaActual << "/" << vidaMaxima << endl;
 		for (std::map<std::string,
 			std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> >::iterator it =
 			collidersSBB.begin(); it != collidersSBB.end(); it++) {
@@ -3119,7 +3150,7 @@ void applicationLoop() {
 						else if (it->first.compare("roca") == 0) {
 							roca->show = false;
 							collidersSBB.erase(it->first);
-							vida--;
+							vidaActual -= 20;
 						}
 						else
 							isCollision = true;
