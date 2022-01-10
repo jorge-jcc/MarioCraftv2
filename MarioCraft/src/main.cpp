@@ -133,6 +133,19 @@ int vida = 100;
 
 // Mayow
 Model spiderModelAnimate;
+
+
+Model venomModelAnimate1;
+Model venomModelAnimate2;
+Model venomModelAnimate3;
+Model venomModelAnimate4;
+Model venomModelAnimate5;
+Model venomModelAnimate6;
+Model venomModelAnimate7;
+Model venomModelAnimate8;
+Model venomModelAnimate9;
+Model venomModelAnimate10;
+
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 16, "../Textures/heightmap.jpeg");
 
@@ -212,7 +225,7 @@ double currTime, lastTime;
 
 // Jump variables
 bool isJump = false;
-float GRAVITY = 1.81;
+float GRAVITY = 3.5;
 double tmv = 0;
 double startTimeJump = 0;
 
@@ -977,8 +990,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	lampara->InitMatrices(lamparitas, &terrain);
 	models->addModel(lampara);
 
-	//Spider
-	spiderModelAnimate.loadModel("../models/Spidi/Spidi.fbx");
+	//Mayow
+	spiderModelAnimate.loadModel("../models/Spiderman/Spidy.fbx");
 	spiderModelAnimate.setShader(&shaderMulLighting);
 
 	// Definimos el tamanio de la imagen
@@ -1129,7 +1142,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	else {
 		printf("init() - No errors yet.");
 	}
-	// Config source 0
+	/* Config source 0
 	// Generate buffers, or else no sound will happen!
 	alGenBuffers(NUM_BUFFERS, buffer);
 	buffer[0] = alutCreateBufferFromFile("../sounds/doubleTap.wav");
@@ -1142,7 +1155,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		printf("- Error open files with alut %d !!\n", errorAlut);
 		exit(2);
 	}
-
+	*/
 
 	alGetError(); /* clear error */
 	alGenSources(NUM_SOURCES, source);
@@ -1336,28 +1349,28 @@ bool processInput(bool continueApplication) {
 	// Seleccionar modelo
 	if (enableCountSelected && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
 		enableCountSelected = false;
-		modelSelected++;
-		if (modelSelected > 2)
-			modelSelected = 0;
+		//modelSelected++;
+		//if (modelSelected > 2)
+			//modelSelected = 0;
 		std::cout << "modelSelected:" << modelSelected << std::endl;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
 		enableCountSelected = true;
 
-	if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+	if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && !isJump) {
 		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(1.0f), glm::vec3(0, 1, 0));
-		animationIndex = 4;
+		animationIndex = 2;
 	}
-	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && !isJump) {
 		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(-1.0f), glm::vec3(0, 1, 0));
-		animationIndex = 4;
-	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		animationIndex = 2;
+	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && !isJump) {
 		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, 0.2));
-		animationIndex = 4;
+		animationIndex = 3;
 	}
-	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && !isJump) {
 		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, -0.2));
-		animationIndex = 4;
+		animationIndex = 2;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		cout << endl;
@@ -1365,8 +1378,13 @@ bool processInput(bool continueApplication) {
 		cout << endl;
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE)
+		animationIndex = 2;
+	
+
 	bool keySpaceStatus = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
 	if (!isJump && keySpaceStatus) {
+		animationIndex = 1;
 		isJump = true;
 		startTimeJump = currTime;
 		tmv = 0;
@@ -2887,19 +2905,20 @@ void applicationLoop() {
 
 		//******************************************************************************************************
 
-		// Collider de Spider
+		// Collider de mayow
 		AbstractModel::OBB spiderCollider;
-		glm::mat4 modelmatrixColliderSpider = glm::mat4(modelMatrixSpider);
-		modelmatrixColliderSpider = glm::rotate(modelmatrixColliderSpider,glm::radians(-90.0f), glm::vec3(1, 0, 0));
+		glm::mat4 modelmatrixColliderMayow = glm::mat4(modelMatrixSpider);
+		modelmatrixColliderMayow = glm::rotate(modelmatrixColliderMayow,glm::radians(-90.0f), glm::vec3(1, 0, 0));
 		// Set the orientation of collider before doing the scale
-		spiderCollider.u = glm::quat_cast(modelmatrixColliderSpider);
-		modelmatrixColliderSpider = glm::scale(modelmatrixColliderSpider, glm::vec3(0.021, 0.021, 0.021));
-		modelmatrixColliderSpider = glm::translate(modelmatrixColliderSpider,glm::vec3(spiderModelAnimate.getObb().c.x,
-			spiderModelAnimate.getObb().c.y,
-			spiderModelAnimate.getObb().c.z + 28));
-		spiderCollider.e = spiderModelAnimate.getObb().e * glm::vec3(0.04, 0.04, 0.06);
-		spiderCollider.c = glm::vec3(modelmatrixColliderSpider[3]);
-		addOrUpdateColliders(collidersOBB, "spider", spiderCollider, modelMatrixSpider);
+		spiderCollider.u = glm::quat_cast(modelmatrixColliderMayow);
+		modelmatrixColliderMayow = glm::scale(modelmatrixColliderMayow, glm::vec3(0.06, 0.06, 0.06));
+		modelmatrixColliderMayow = glm::translate(modelmatrixColliderMayow,
+			glm::vec3(spiderModelAnimate.getObb().c.x,
+				spiderModelAnimate.getObb().c.y,
+				spiderModelAnimate.getObb().c.z));
+		spiderCollider.e = spiderModelAnimate.getObb().e * glm::vec3(0.05, 0.07, 0.09) * glm::vec3(0.7, 0.7, 0.7);
+		spiderCollider.c = glm::vec3(modelmatrixColliderMayow[3]);
+		addOrUpdateColliders(collidersOBB, "mayow", spiderCollider, modelMatrixSpider);
 
 		//***************************************************************************
 		// Collider Monedas
@@ -3222,6 +3241,7 @@ void renderScene(bool renderParticles) {
 	tmv = currTime - startTimeJump;
 	if (modelMatrixSpider[3][1] < altura) {
 		isJump = false;
+		//animationIndex = 2;
 		modelMatrixSpider[3][1] = altura;
 	}
 	glm::mat4 modelMatrixSpiderBody = glm::mat4(modelMatrixSpider);
