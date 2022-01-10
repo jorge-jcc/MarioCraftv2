@@ -248,8 +248,8 @@ GLuint depthMap, depthMapFBO;
  */
 
  // OpenAL Defines
-#define NUM_BUFFERS 4
-#define NUM_SOURCES 4
+#define NUM_BUFFERS 5
+#define NUM_SOURCES 5
 #define NUM_ENVIRONMENTS 1
 // Listener
 ALfloat listenerPos[] = { 0.0, 0.0, 0.0 };
@@ -267,6 +267,9 @@ ALfloat source2Vel[] = { 0.0, 0.0, 0.0 };
 // Source 3
 ALfloat source3Pos[] = { 0.0, 0.0, 0.0 };
 ALfloat source3Vel[] = { 0.0, 0.0, 0.0 };
+// Source 4
+ALfloat source4Pos[] = { 0.0, 0.0, 0.0 };
+ALfloat source4Vel[] = { 0.0, 0.0, 0.0 };
 // Buffers
 ALuint buffer[NUM_BUFFERS];
 ALuint source[NUM_SOURCES];
@@ -277,7 +280,7 @@ ALenum format;
 ALvoid *data;
 int ch;
 ALboolean loop;
-std::vector<bool> sourcesPlay = { true, true, true, true };
+std::vector<bool> sourcesPlay = { true, true, true, true, false, };
 
 // Se definen todos las funciones.
 void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes);
@@ -1133,6 +1136,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	buffer[1] = alutCreateBufferFromFile("../sounds/juggerNog.wav");
 	buffer[2] = alutCreateBufferFromFile("../sounds/quickRevive.wav");
 	buffer[3] = alutCreateBufferFromFile("../sounds/speedCola.wav");
+	buffer[4] = alutCreateBufferFromFile("../sounds/moneda.wav");
 	int errorAlut = alutGetError();
 	if (errorAlut != ALUT_ERROR_NO_ERROR) {
 		printf("- Error open files with alut %d !!\n", errorAlut);
@@ -1181,6 +1185,14 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	alSourcei(source[3], AL_BUFFER, buffer[3]);
 	alSourcei(source[3], AL_LOOPING, AL_TRUE);
 	alSourcef(source[3], AL_MAX_DISTANCE, 50);
+
+	alSourcef(source[4], AL_PITCH, 1.0f);
+	alSourcef(source[4], AL_GAIN, 1.0f);
+	alSourcefv(source[4], AL_POSITION, source4Pos);
+	alSourcefv(source[4], AL_VELOCITY, source4Vel);
+	alSourcei(source[4], AL_BUFFER, buffer[4]);
+	alSourcei(source[4], AL_LOOPING, AL_FALSE);
+	alSourcef(source[4], AL_MAX_DISTANCE, 50);
 }
 
 void destroy() {
@@ -1367,7 +1379,6 @@ bool processInput(bool continueApplication) {
 
 void applicationLoop() {
 	bool psi = true;
-
 	glm::mat4 view;
 	glm::vec3 axis;
 	glm::vec3 target;
@@ -3014,10 +3025,11 @@ void applicationLoop() {
 				if (testSphereOBox(std::get<0>(it->second),
 					std::get<0>(jt->second))) {
 					//std::cout << "Colision " << it->first << " with " << jt->first << std::endl;
-					if (jt->first.compare("mayow") == 0) {
+					if (jt->first.compare("spider") == 0) {
 						if (it->first.find("moneda-") == 0) {
 							moneda->removeMoneda(it->first);
 							collidersSBB.erase(it->first);
+							sourcesPlay[4] = true;
 							puntos++;
 						}
 						else if (it->first.compare("roca") == 0) {
@@ -3092,6 +3104,11 @@ void applicationLoop() {
 		source3Pos[1] = speedCola->matrix[3].y;
 		source3Pos[2] = speedCola->matrix[3].z;
 		alSourcefv(source[3], AL_POSITION, source3Pos);
+
+		source4Pos[0] = modelMatrixSpider[3].x;
+		source4Pos[1] = modelMatrixSpider[3].y;
+		source4Pos[2] = modelMatrixSpider[3].z;
+		alSourcefv(source[4], AL_POSITION, source4Pos);
 
 		// Listener for the Thris person camera
 		listenerPos[0] = modelMatrixSpider[3].x;
