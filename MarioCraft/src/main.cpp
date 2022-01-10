@@ -221,6 +221,15 @@ std::map<std::string, glm::vec3> blendingUnsorted = {
 		{"fire", glm::vec3(0.f)}
 };
 
+std::map<std::string, RocaValues> roquitas = {
+	{"rocaEvent-0", Roca::newRoca(93.f, 48.f, glm::vec3(-0.7f, 0.f, 0.f), glm::vec3(1.f, 0.f, 0.f))},
+	{"rocaEvent-1", Roca::newRoca(87.f, 53.f, glm::vec3(0.f, 0.f, 0.7f), glm::vec3(0.f, 0.f, 1.f))},
+	{"rocaEvent-2", Roca::newRoca(23.8f, 39.f, glm::vec3(0.f, 0.f, 0.7f), glm::vec3(0.f, 0.f, 1.f))},
+	{"rocaEvent-3", Roca::newRoca(54.f, 44.f, glm::vec3(-0.7f, 0.f, 0.f), glm::vec3(1.f, 0.f, 0.f))},
+	{"rocaEvent-4", Roca::newRoca(30.5f, 80.f, glm::vec3(0.f, 0.f, -0.7f), glm::vec3(0.f, 0.f, -1.f))},
+	{"rocaEvent-5", Roca::newRoca(60.5f, 78.f, glm::vec3(0.f, 0.f, -0.7f), glm::vec3(0.f, 0.f, -1.f))},
+};
+
 double deltaTime;
 double currTime, lastTime;
 
@@ -585,7 +594,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	models->addModel(banca);
 
 	roca->Load(&shaderMulLighting);
-	roca->InitMatrices(&terrain);
 	models->addModel(roca);
 	
 
@@ -2965,6 +2973,56 @@ void applicationLoop() {
 		rocaEventCollider0.e = meta->getObb().e * glm::vec3(0.001, .05f, .18f);
 		addOrUpdateColliders(collidersOBB, "rocaEvent-0", rocaEventCollider0, meta->matrix);
 
+		AbstractModel::OBB rocaEventCollider1;
+		modelMatrixColliderRocaEvent = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		rocaEventCollider1.u = glm::quat_cast(meta->matrix);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, meta->getObb().c);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, glm::vec3(875.f, 5.0f, 530.f));
+		rocaEventCollider1.c = glm::vec3(modelMatrixColliderRocaEvent[3]);
+		rocaEventCollider1.e = meta->getObb().e * glm::vec3(0.02f, 0.05f, 0.01f);
+		addOrUpdateColliders(collidersOBB, "rocaEvent-1", rocaEventCollider1, meta->matrix);
+
+		AbstractModel::OBB rocaEventCollider2;
+		modelMatrixColliderRocaEvent = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		rocaEventCollider2.u = glm::quat_cast(meta->matrix);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, meta->getObb().c);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, glm::vec3(295, 5.0f, 580.f));
+		rocaEventCollider2.c = glm::vec3(modelMatrixColliderRocaEvent[3]);
+		rocaEventCollider2.e = meta->getObb().e * glm::vec3(0.02f, 0.05f, 0.01f);
+		addOrUpdateColliders(collidersOBB, "rocaEvent-2", rocaEventCollider2, meta->matrix);
+
+		AbstractModel::OBB rocaEventCollider3;
+		modelMatrixColliderRocaEvent = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		rocaEventCollider3.u = glm::quat_cast(meta->matrix);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, meta->getObb().c);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, glm::vec3(350, 5.0f, 220.f));
+		rocaEventCollider3.c = glm::vec3(modelMatrixColliderRocaEvent[3]);
+		rocaEventCollider3.e = meta->getObb().e * glm::vec3(0.001, .05f, .18f);
+		addOrUpdateColliders(collidersOBB, "rocaEvent-3", rocaEventCollider3, meta->matrix);
+
+		AbstractModel::OBB rocaEventCollider4;
+		modelMatrixColliderRocaEvent = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		rocaEventCollider4.u = glm::quat_cast(meta->matrix);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, meta->getObb().c);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, glm::vec3(360, 5.0f, 280.f));
+		rocaEventCollider4.c = glm::vec3(modelMatrixColliderRocaEvent[3]);
+		rocaEventCollider4.e = meta->getObb().e * glm::vec3(0.02f, 0.05f, 0.01f);
+		addOrUpdateColliders(collidersOBB, "rocaEvent-4", rocaEventCollider4, meta->matrix);
+
+		AbstractModel::OBB rocaEventCollider5;
+		modelMatrixColliderRocaEvent = glm::mat4(meta->matrix);
+		// Set the orientation of collider before doing the scale
+		rocaEventCollider5.u = glm::quat_cast(meta->matrix);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, meta->getObb().c);
+		modelMatrixColliderRocaEvent = glm::translate(modelMatrixColliderRocaEvent, glm::vec3(625.f, 5.0f, 340.f));
+		rocaEventCollider5.c = glm::vec3(modelMatrixColliderRocaEvent[3]);
+		rocaEventCollider5.e = meta->getObb().e * glm::vec3(0.02f, 0.05f, 0.01f);
+		addOrUpdateColliders(collidersOBB, "rocaEvent-5", rocaEventCollider5, meta->matrix);
+
 		/*******************************************
 		 * Render de colliders
 		 *******************************************/
@@ -3012,8 +3070,7 @@ void applicationLoop() {
 							platformHeight = std::get<1>(jt->second)[3][1];
 						}
 						else if (jt->first.find("rocaEvent-") == 0) {
-							roca->InitMatrices(&terrain);
-							roca->show = true;
+							roca->InitMatrices(roquitas.find(jt->first)->second, &terrain);
 						}
 						else
 							isCollision = true;
