@@ -115,13 +115,17 @@ MarioCraftModel * banca = new MarioCraftModel();
 MarioCraftModel * lamp = new MarioCraftModel();
 MarioCraftModel * laberinto = new MarioCraftModel();
 MarioCraftModel * torre = new MarioCraftModel();
+MarioCraftModel * speedCola = new MarioCraftModel();
+MarioCraftModel * doubleTap = new MarioCraftModel();
+MarioCraftModel * juggerNog = new MarioCraftModel();
+MarioCraftModel * quickRevive = new MarioCraftModel();
 CasasToad * casita = new CasasToad();
 Arbol * arbol = new Arbol();
 Antorcha * antorcha = new Antorcha();
 Lampara * lampara = new Lampara();
 
 // Mayow
-Model mayowModelAnimate;
+Model spiderModelAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 16, "../Textures/heightmap.jpeg");
 
@@ -173,9 +177,9 @@ int lastMousePosX, offsetX = 0;
 int lastMousePosY, offsetY = 0;
 
 // Model matrix definitions
-glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixSpider = glm::mat4(1.0f);
 
-int animationIndex = 1;
+int animationIndex = 4;
 int modelSelected = 2;
 bool enableCountSelected = true;
 
@@ -241,20 +245,20 @@ GLuint depthMap, depthMapFBO;
 #define NUM_SOURCES 4
 #define NUM_ENVIRONMENTS 1
 // Listener
-ALfloat listenerPos[] = { 0.0, 0.0, 4.0 };
+ALfloat listenerPos[] = { 0.0, 0.0, 0.0 };
 ALfloat listenerVel[] = { 0.0, 0.0, 0.0 };
 ALfloat listenerOri[] = { 0.0, 0.0, 1.0, 0.0, 1.0, 0.0 };
 // Source 0
-ALfloat source0Pos[] = { -2.0, 0.0, 0.0 };
+ALfloat source0Pos[] = { 0.0, 0.0, 0.0 };
 ALfloat source0Vel[] = { 0.0, 0.0, 0.0 };
 // Source 1
-ALfloat source1Pos[] = { 2.0, 0.0, 0.0 };
+ALfloat source1Pos[] = { 0.0, 0.0, 0.0 };
 ALfloat source1Vel[] = { 0.0, 0.0, 0.0 };
 // Source 2
-ALfloat source2Pos[] = { 2.0, 0.0, 0.0 };
+ALfloat source2Pos[] = { 0.0, 0.0, 0.0 };
 ALfloat source2Vel[] = { 0.0, 0.0, 0.0 };
 // Source 3
-ALfloat source3Pos[] = { 2.0, 0.0, 0.0 };
+ALfloat source3Pos[] = { 0.0, 0.0, 0.0 };
 ALfloat source3Vel[] = { 0.0, 0.0, 0.0 };
 // Buffers
 ALuint buffer[NUM_BUFFERS];
@@ -658,6 +662,47 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	casa3->mcEnable(DEPTH);
 	models->addModel(casa3);
 
+	
+	speedCola->loadModel("../models/speedCola/speedCola.obj");
+	speedCola->setShader(&shaderMulLighting);
+	speedCola
+		->Init(glm::mat4(1.0f))
+		->Translate(-90.f, 0.f, -99.f)
+		->Scale(0.05f, 0.05f, 0.05f);
+	speedCola->matrix[3][1] = terrain.getHeightTerrain(speedCola->matrix[3][0], speedCola->matrix[3][2]);
+	speedCola->mcEnable(DEPTH);
+	models->addModel(speedCola);
+
+	doubleTap->loadModel("../models/doubleTap/doubleTap.obj");
+	doubleTap->setShader(&shaderMulLighting);
+	doubleTap
+		->Init(glm::mat4(1.0f))
+		->Translate(21.f, 0.f, -98.8f)
+		->Scale(0.05f, 0.05f, 0.05f);
+	doubleTap->matrix[3][1] = terrain.getHeightTerrain(doubleTap->matrix[3][0], doubleTap->matrix[3][2]);
+	doubleTap->mcEnable(DEPTH);
+	models->addModel(doubleTap);
+
+	juggerNog->loadModel("../models/juggerNog/juggerNog.obj");
+	juggerNog->setShader(&shaderMulLighting);
+	juggerNog
+		->Init(glm::mat4(1.0f))
+		->Translate(60.5f, 0.f, 88.f)
+		->Scale(0.05f, 0.05f, 0.05f);
+	juggerNog->matrix[3][1] = terrain.getHeightTerrain(juggerNog->matrix[3][0], juggerNog->matrix[3][2]);
+	juggerNog->mcEnable(DEPTH);
+	models->addModel(juggerNog);
+
+	quickRevive->loadModel("../models/quickRevive/quickRevive.obj");
+	quickRevive->setShader(&shaderMulLighting);
+	quickRevive
+		->Init(glm::mat4(1.0f))
+		->Translate(-23.f, 0.f, 42.f)
+		->Scale(0.05f, 0.05f, 0.05f);
+	quickRevive->matrix[3][1] = terrain.getHeightTerrain(quickRevive->matrix[3][0], quickRevive->matrix[3][2]);
+	quickRevive->mcEnable(DEPTH);
+	models->addModel(quickRevive);
+
 	vector<CasaToad> casitas = {
 		CasasToad::newCasa(AZUL,  8.f, - 5.f, -90.f), 
 		CasasToad::newCasa(ROJA,  8.f, -20.f, -90.f),
@@ -745,9 +790,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	lampara->InitMatrices(lamparitas, &terrain);
 	models->addModel(lampara);
 
-	//Mayow
-	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
-	mayowModelAnimate.setShader(&shaderMulLighting);
+	//Spider
+	spiderModelAnimate.loadModel("../models/Spidi/Spidi.fbx");
+	spiderModelAnimate.setShader(&shaderMulLighting);
 
 	// Definimos el tamanio de la imagen
 	int imageWidth, imageHeight;
@@ -900,10 +945,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Config source 0
 	// Generate buffers, or else no sound will happen!
 	alGenBuffers(NUM_BUFFERS, buffer);
-	buffer[0] = alutCreateBufferFromFile("../sounds/fountain.wav");
-	buffer[1] = alutCreateBufferFromFile("../sounds/fire.wav");
-	buffer[2] = alutCreateBufferFromFile("../sounds/darth_vader.wav");
-	buffer[3] = alutCreateBufferFromFile("../sounds/sonidoCarro.wav");
+	buffer[0] = alutCreateBufferFromFile("../sounds/doubleTap.wav");
+	buffer[1] = alutCreateBufferFromFile("../sounds/juggerNog.wav");
+	buffer[2] = alutCreateBufferFromFile("../sounds/quickRevive.wav");
+	buffer[3] = alutCreateBufferFromFile("../sounds/speedCola.wav");
 	int errorAlut = alutGetError();
 	if (errorAlut != ALUT_ERROR_NO_ERROR) {
 		printf("- Error open files with alut %d !!\n", errorAlut);
@@ -922,36 +967,36 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		printf("init - no errors after alGenSources\n");
 	}
 	alSourcef(source[0], AL_PITCH, 1.0f);
-	alSourcef(source[0], AL_GAIN, 3.0f);
+	alSourcef(source[0], AL_GAIN, 0.02f);
 	alSourcefv(source[0], AL_POSITION, source0Pos);
 	alSourcefv(source[0], AL_VELOCITY, source0Vel);
 	alSourcei(source[0], AL_BUFFER, buffer[0]);
 	alSourcei(source[0], AL_LOOPING, AL_TRUE);
-	alSourcef(source[0], AL_MAX_DISTANCE, 2000);
+	alSourcef(source[0], AL_MAX_DISTANCE, 50);
 
 	alSourcef(source[1], AL_PITCH, 1.0f);
-	alSourcef(source[1], AL_GAIN, 0.5f);
+	alSourcef(source[1], AL_GAIN, 0.02f);
 	alSourcefv(source[1], AL_POSITION, source1Pos);
 	alSourcefv(source[1], AL_VELOCITY, source1Vel);
 	alSourcei(source[1], AL_BUFFER, buffer[1]);
 	alSourcei(source[1], AL_LOOPING, AL_TRUE);
-	alSourcef(source[1], AL_MAX_DISTANCE, 500);
+	alSourcef(source[1], AL_MAX_DISTANCE, 50);
 
 	alSourcef(source[2], AL_PITCH, 1.0f);
-	alSourcef(source[2], AL_GAIN, 0.3f);
+	alSourcef(source[2], AL_GAIN, 0.02f);
 	alSourcefv(source[2], AL_POSITION, source2Pos);
 	alSourcefv(source[2], AL_VELOCITY, source2Vel);
 	alSourcei(source[2], AL_BUFFER, buffer[2]);
 	alSourcei(source[2], AL_LOOPING, AL_TRUE);
-	alSourcef(source[2], AL_MAX_DISTANCE, 500);
+	alSourcef(source[2], AL_MAX_DISTANCE, 50);
 
 	alSourcef(source[3], AL_PITCH, 1.0f);
-	alSourcef(source[3], AL_GAIN, 1.0f);
+	alSourcef(source[3], AL_GAIN, 0.02f);
 	alSourcefv(source[3], AL_POSITION, source3Pos);
 	alSourcefv(source[3], AL_VELOCITY, source3Vel);
 	alSourcei(source[3], AL_BUFFER, buffer[3]);
-	alSourcei(source[3], AL_LOOPING, AL_FALSE);
-	alSourcef(source[3], AL_MAX_DISTANCE, 500);
+	alSourcei(source[3], AL_LOOPING, AL_TRUE);
+	alSourcef(source[3], AL_MAX_DISTANCE, 50);
 }
 
 void destroy() {
@@ -982,7 +1027,7 @@ void destroy() {
 	//models->destroy();
 
 	// Custom objects animate
-	mayowModelAnimate.destroy();
+	spiderModelAnimate.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -1071,12 +1116,12 @@ bool processInput(bool continueApplication) {
 		int axesCount, buttonCount;
 		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
 		if (fabs(axes[0]) > 0.2) {
-			modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(1.0f), glm::vec3(0, -axes[0] * 0.1, 0));
+			modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(1.0f), glm::vec3(0, -axes[0] * 0.1, 0));
 			animationIndex = 1;
 		}
 
 		if (fabs(axes[1]) > 0.2) {
-			modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, axes[1] * 0.1));
+			modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, axes[1] * 0.1));
 			animationIndex = 0;
 		}
 
@@ -1104,19 +1149,19 @@ bool processInput(bool continueApplication) {
 		enableCountSelected = true;
 
 	if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(1.0f), glm::vec3(0, 1, 0));
-		animationIndex = 0;
+		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(1.0f), glm::vec3(0, 1, 0));
+		animationIndex = 4;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-1.0f), glm::vec3(0, 1, 0));
-		animationIndex = 0;
+		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(-1.0f), glm::vec3(0, 1, 0));
+		animationIndex = 4;
 	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, 0.2));
-		animationIndex = 0;
+		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, 0.2));
+		animationIndex = 4;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, -0.2));
-		animationIndex = 0;
+		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, -0.2));
+		animationIndex = 4;
 	}
 
 	bool keySpaceStatus = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
@@ -1139,8 +1184,8 @@ void applicationLoop() {
 	glm::vec3 target;
 	float angleTarget;
 
-	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
-	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+	modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(13.0f, 0.05f, -5.0f));
+	modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
 	lastTime = TimeManager::Instance().GetTime();
 
@@ -1174,9 +1219,9 @@ void applicationLoop() {
 			
 		}
 		else {
-			axis = glm::axis(glm::quat_cast(modelMatrixMayow));
-			angleTarget = glm::angle(glm::quat_cast(modelMatrixMayow));
-			target = modelMatrixMayow[3];
+			axis = glm::axis(glm::quat_cast(modelMatrixSpider));
+			angleTarget = glm::angle(glm::quat_cast(modelMatrixSpider));
+			target = modelMatrixSpider[3];
 		}
 
 		if (std::isnan(angleTarget))
@@ -1673,6 +1718,47 @@ void applicationLoop() {
 		fortaleza1Collider.e = fortaleza->getObb().e * glm::vec3(0.6f, 2.f, 1.1f);
 		addOrUpdateColliders(collidersOBB, "fortaleza1", fortaleza1Collider, fortaleza->matrix);
 
+		//Perks
+		
+		AbstractModel::OBB speedColaCollider;
+		glm::mat4 modelMatrixColliderspeedCola = glm::mat4(speedCola->matrix);
+		// Set the orientation of collider before doing the scale
+		speedColaCollider.u = glm::quat_cast(speedCola->matrix);
+		modelMatrixColliderspeedCola = glm::translate(modelMatrixColliderspeedCola, speedCola->getObb().c);
+		modelMatrixColliderspeedCola = glm::translate(modelMatrixColliderspeedCola, glm::vec3(0.0f, 0.0f, 0.0f));
+		speedColaCollider.c = glm::vec3(modelMatrixColliderspeedCola[3]);
+		speedColaCollider.e = speedCola->getObb().e * glm::vec3(0.05f, 0.05f, 0.05f);
+		addOrUpdateColliders(collidersOBB, "speedCola", speedColaCollider, speedCola->matrix);
+
+		AbstractModel::OBB juggerNogCollider;
+		glm::mat4 modelMatrixColliderjuggerNog = glm::mat4(juggerNog->matrix);
+		// Set the orientation of collider before doing the scale
+		juggerNogCollider.u = glm::quat_cast(juggerNog->matrix);
+		modelMatrixColliderjuggerNog = glm::translate(modelMatrixColliderjuggerNog, juggerNog->getObb().c);
+		modelMatrixColliderjuggerNog = glm::translate(modelMatrixColliderjuggerNog, glm::vec3(0.0f, 0.0f, 0.0f));
+		juggerNogCollider.c = glm::vec3(modelMatrixColliderjuggerNog[3]);
+		juggerNogCollider.e = juggerNog->getObb().e * glm::vec3(0.05f, 0.05f, 0.05f);
+		addOrUpdateColliders(collidersOBB, "juggerNog", juggerNogCollider, juggerNog->matrix);
+
+		AbstractModel::OBB doubleTapCollider;
+		glm::mat4 modelMatrixColliderdoubleTap = glm::mat4(doubleTap->matrix);
+		// Set the orientation of collider before doing the scale
+		doubleTapCollider.u = glm::quat_cast(doubleTap->matrix);
+		modelMatrixColliderdoubleTap = glm::translate(modelMatrixColliderdoubleTap, doubleTap->getObb().c);
+		modelMatrixColliderdoubleTap = glm::translate(modelMatrixColliderdoubleTap, glm::vec3(0.0f, 0.0f, 0.0f));
+		doubleTapCollider.c = glm::vec3(modelMatrixColliderdoubleTap[3]);
+		doubleTapCollider.e = doubleTap->getObb().e * glm::vec3(0.05f, 0.05f, 0.05f);
+		addOrUpdateColliders(collidersOBB, "doubleTap", doubleTapCollider, doubleTap->matrix);
+
+		AbstractModel::OBB quickReviveCollider;
+		glm::mat4 modelMatrixColliderquickRevive = glm::mat4(quickRevive->matrix);
+		// Set the orientation of collider before doing the scale
+		quickReviveCollider.u = glm::quat_cast(quickRevive->matrix);
+		modelMatrixColliderquickRevive = glm::translate(modelMatrixColliderquickRevive, quickRevive->getObb().c);
+		modelMatrixColliderquickRevive = glm::translate(modelMatrixColliderquickRevive, glm::vec3(0.0f, 0.0f, 0.0f));
+		quickReviveCollider.c = glm::vec3(modelMatrixColliderquickRevive[3]);
+		quickReviveCollider.e = quickRevive->getObb().e * glm::vec3(0.05f, 0.05f, 0.05f);
+		addOrUpdateColliders(collidersOBB, "quickRevive", quickReviveCollider, quickRevive->matrix);
 
 
 		//Collider Laberinto *****************************************************************************
@@ -2601,20 +2687,19 @@ void applicationLoop() {
 
 		//******************************************************************************************************
 
-		// Collider de mayow
-		AbstractModel::OBB mayowCollider;
-		glm::mat4 modelmatrixColliderMayow = glm::mat4(modelMatrixMayow);
-		modelmatrixColliderMayow = glm::rotate(modelmatrixColliderMayow,glm::radians(-90.0f), glm::vec3(1, 0, 0));
+		// Collider de Spider
+		AbstractModel::OBB spiderCollider;
+		glm::mat4 modelmatrixColliderSpider = glm::mat4(modelMatrixSpider);
+		modelmatrixColliderSpider = glm::rotate(modelmatrixColliderSpider,glm::radians(-90.0f), glm::vec3(1, 0, 0));
 		// Set the orientation of collider before doing the scale
-		mayowCollider.u = glm::quat_cast(modelmatrixColliderMayow);
-		modelmatrixColliderMayow = glm::scale(modelmatrixColliderMayow, glm::vec3(0.021, 0.021, 0.021));
-		modelmatrixColliderMayow = glm::translate(modelmatrixColliderMayow,
-			glm::vec3(mayowModelAnimate.getObb().c.x,
-				mayowModelAnimate.getObb().c.y,
-				mayowModelAnimate.getObb().c.z));
-		mayowCollider.e = mayowModelAnimate.getObb().e * glm::vec3(0.021, 0.021, 0.021) * glm::vec3(0.787401574, 0.787401574, 0.787401574);
-		mayowCollider.c = glm::vec3(modelmatrixColliderMayow[3]);
-		addOrUpdateColliders(collidersOBB, "mayow", mayowCollider, modelMatrixMayow);
+		spiderCollider.u = glm::quat_cast(modelmatrixColliderSpider);
+		modelmatrixColliderSpider = glm::scale(modelmatrixColliderSpider, glm::vec3(0.021, 0.021, 0.021));
+		modelmatrixColliderSpider = glm::translate(modelmatrixColliderSpider,glm::vec3(spiderModelAnimate.getObb().c.x,
+			spiderModelAnimate.getObb().c.y,
+			spiderModelAnimate.getObb().c.z + 28));
+		spiderCollider.e = spiderModelAnimate.getObb().e * glm::vec3(0.04, 0.04, 0.06);
+		spiderCollider.c = glm::vec3(modelmatrixColliderSpider[3]);
+		addOrUpdateColliders(collidersOBB, "spider", spiderCollider, modelMatrixSpider);
 
 		/*******************************************
 		 * Render de colliders
@@ -2657,7 +2742,7 @@ void applicationLoop() {
 						std::get<0>(jt->second))) {
 					std::cout << "Colision " << it->first << " with "
 						<< jt->first << std::endl;
-					if (it->first.compare("mayow") == 0){ 
+					if (it->first.compare("spider") == 0){ 
 						if (jt->first.compare("PuentePiso") == 0) {
 							isPlataform = true;
 							platformHeight = std::get<1>(jt->second)[3][1];
@@ -2725,8 +2810,8 @@ void applicationLoop() {
 				if (!colIt->second)
 					addOrUpdateColliders(collidersOBB, jt->first);
 				else {
-					if (jt->first.compare("mayow") == 0) {
-						modelMatrixMayow = std::get<1>(jt->second);
+					if (jt->first.compare("spider") == 0) {
+						modelMatrixSpider = std::get<1>(jt->second);
 					}
 				}
 			}
@@ -2738,26 +2823,35 @@ void applicationLoop() {
 		/****************************+
 		 * Open AL sound data
 		 */
-		/*
-		source0Pos[0] = modelMatrixFountain[3].x;
-		source0Pos[1] = modelMatrixFountain[3].y;
-		source0Pos[2] = modelMatrixFountain[3].z;
+		
+		source0Pos[0] = doubleTap->matrix[3].x;
+		source0Pos[1] = doubleTap->matrix[3].y;
+		source0Pos[2] = doubleTap->matrix[3].z;
 		alSourcefv(source[0], AL_POSITION, source0Pos);
 
-		source2Pos[0] = modelMatrixDart[3].x;
-		source2Pos[1] = modelMatrixDart[3].y;
-		source2Pos[2] = modelMatrixDart[3].z;
+		source1Pos[0] = juggerNog->matrix[3].x;
+		source1Pos[1] = juggerNog->matrix[3].y;
+		source1Pos[2] = juggerNog->matrix[3].z;
+		alSourcefv(source[1], AL_POSITION, source1Pos);
+
+		source2Pos[0] = quickRevive->matrix[3].x;
+		source2Pos[1] = quickRevive->matrix[3].y;
+		source2Pos[2] = quickRevive->matrix[3].z;
 		alSourcefv(source[2], AL_POSITION, source2Pos);
-		*/
+
+		source3Pos[0] = speedCola->matrix[3].x;
+		source3Pos[1] = speedCola->matrix[3].y;
+		source3Pos[2] = speedCola->matrix[3].z;
+		alSourcefv(source[3], AL_POSITION, source3Pos);
 
 		// Listener for the Thris person camera
-		listenerPos[0] = modelMatrixMayow[3].x;
-		listenerPos[1] = modelMatrixMayow[3].y;
-		listenerPos[2] = modelMatrixMayow[3].z;
+		listenerPos[0] = modelMatrixSpider[3].x;
+		listenerPos[1] = modelMatrixSpider[3].y;
+		listenerPos[2] = modelMatrixSpider[3].z;
 		alListenerfv(AL_POSITION, listenerPos);
 
-		glm::vec3 upModel = glm::normalize(modelMatrixMayow[1]);
-		glm::vec3 frontModel = glm::normalize(modelMatrixMayow[2]);
+		glm::vec3 upModel = glm::normalize(modelMatrixSpider[1]);
+		glm::vec3 frontModel = glm::normalize(modelMatrixSpider[2]);
 
 		listenerOri[0] = frontModel.x;
 		listenerOri[1] = frontModel.y;
@@ -2797,7 +2891,7 @@ void prepareScene() {
 	terrain.setShader(&shaderTerrain);
 
 	//Mayow
-	mayowModelAnimate.setShader(&shaderMulLighting);
+	spiderModelAnimate.setShader(&shaderMulLighting);
 }
 
 void prepareDepthScene() {
@@ -2809,7 +2903,7 @@ void prepareDepthScene() {
 	models->prepareModels(&shaderDepth);
 
 	//Mayow
-	mayowModelAnimate.setShader(&shaderDepth);
+	spiderModelAnimate.setShader(&shaderDepth);
 }
 
 void renderScene(bool renderParticles) {
@@ -2856,17 +2950,17 @@ void renderScene(bool renderParticles) {
 	 * Custom Anim objects obj
 	 *******************************************/
 	float altura;
-	altura = isPlataform ? platformHeight : terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
-	modelMatrixMayow[3][1] = -GRAVITY * tmv * tmv + 3.5 * tmv + altura;
+	altura = isPlataform ? platformHeight : terrain.getHeightTerrain(modelMatrixSpider[3][0], modelMatrixSpider[3][2]);
+	modelMatrixSpider[3][1] = -GRAVITY * tmv * tmv + 3.5 * tmv + altura;
 	tmv = currTime - startTimeJump;
-	if (modelMatrixMayow[3][1] < altura) {
+	if (modelMatrixSpider[3][1] < altura) {
 		isJump = false;
-		modelMatrixMayow[3][1] = altura;
+		modelMatrixSpider[3][1] = altura;
 	}
-	glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
-	modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
-	mayowModelAnimate.setAnimationIndex(animationIndex);
-	mayowModelAnimate.render(modelMatrixMayowBody);
+	glm::mat4 modelMatrixSpiderBody = glm::mat4(modelMatrixSpider);
+	modelMatrixSpiderBody = glm::scale(modelMatrixSpiderBody, glm::vec3(0.0006, 0.0006, 0.0006));
+	spiderModelAnimate.setAnimationIndex(animationIndex);
+	spiderModelAnimate.render(modelMatrixSpiderBody);
 
 	/**********
 	 * Render de las transparencias
@@ -2930,7 +3024,7 @@ void renderScene(bool renderParticles) {
 			 //source1Pos[1] = modelFireParticles[3].y;
 			 //source1Pos[2] = modelFireParticles[3].z;
 			 //alSourcefv(source[1], AL_POSITION, source1Pos);
-
+				
 			 /**********
 			  * End Render particles systems
 			  */
