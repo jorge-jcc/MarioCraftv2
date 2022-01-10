@@ -3,6 +3,7 @@
 #include <string>		
 #include <random>
 #include <vector>
+#include <map>
 
 #include "Headers/Model.h"
 #include "Headers/Shader.h"
