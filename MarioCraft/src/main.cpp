@@ -193,13 +193,14 @@ float timeDay = 0.f;
 glm::vec3 light = glm::vec3(0.05f);
 
 bool exitApp = false;
+bool mando = false;
 int lastMousePosX, offsetX = 0;
 int lastMousePosY, offsetY = 0;
 
 // Model matrix definitions
 glm::mat4 modelMatrixSpider = glm::mat4(1.0f);
 
-int animationIndex = 4;
+int animationIndex = 2;
 int modelSelected = 2;
 bool enableCountSelected = true;
 
@@ -990,7 +991,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	lampara->InitMatrices(lamparitas, &terrain);
 	models->addModel(lampara);
 
-	//Mayow
+	//Spiderman
 	spiderModelAnimate.loadModel("../models/Spiderman/Spidy.fbx");
 	spiderModelAnimate.setShader(&shaderMulLighting);
 
@@ -1142,7 +1143,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	else {
 		printf("init() - No errors yet.");
 	}
-	/* Config source 0
+	// Config source 0
 	// Generate buffers, or else no sound will happen!
 	alGenBuffers(NUM_BUFFERS, buffer);
 	buffer[0] = alutCreateBufferFromFile("../sounds/doubleTap.wav");
@@ -1155,7 +1156,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		printf("- Error open files with alut %d !!\n", errorAlut);
 		exit(2);
 	}
-	*/
 
 	alGetError(); /* clear error */
 	alGenSources(NUM_SOURCES, source);
@@ -1325,20 +1325,25 @@ bool processInput(bool continueApplication) {
 		int axesCount, buttonCount;
 		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
 		if (fabs(axes[0]) > 0.2) {
-			modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(1.0f), glm::vec3(0, -axes[0] * 0.1, 0));
-			animationIndex = 1;
+			modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(1.0f), glm::vec3(0, -axes[0] * 0.3, 0));
+			animationIndex = 2;
 		}
 
 		if (fabs(axes[1]) > 0.2) {
-			modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, axes[1] * 0.1));
-			animationIndex = 0;
+			modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, axes[1] * 0.4));
+			animationIndex = 3;
 		}
 
 		const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
 		if (!isJump && buttons[0] == GLFW_PRESS) {
+			animationIndex = 1;
 			isJump = true;
 			startTimeJump = currTime;
 			tmv = 0;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE && fabs(axes[1]) < 0.2 && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
+			animationIndex = 2;
 		}
 	}
 	// Control de la camara
@@ -1358,18 +1363,18 @@ bool processInput(bool continueApplication) {
 		enableCountSelected = true;
 
 	if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && !isJump) {
-		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(1.0f), glm::vec3(0, 1, 0));
+		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(3.0f), glm::vec3(0, 1, 0));
 		animationIndex = 2;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && !isJump) {
-		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(-1.0f), glm::vec3(0, 1, 0));
+		modelMatrixSpider = glm::rotate(modelMatrixSpider, glm::radians(-3.0f), glm::vec3(0, 1, 0));
 		animationIndex = 2;
 	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && !isJump) {
-		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, 0.2));
+		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, 0.4));
 		animationIndex = 3;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && !isJump) {
-		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, -0.2));
+		modelMatrixSpider = glm::translate(modelMatrixSpider, glm::vec3(0, 0, -0.4));
 		animationIndex = 2;
 	}
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
@@ -1378,8 +1383,11 @@ bool processInput(bool continueApplication) {
 		cout << endl;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE)
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_RELEASE && glfwJoystickPresent(GLFW_JOYSTICK_1) == GL_FALSE){
 		animationIndex = 2;
+	}
+		
+		
 	
 
 	bool keySpaceStatus = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
@@ -1388,7 +1396,7 @@ bool processInput(bool continueApplication) {
 		isJump = true;
 		startTimeJump = currTime;
 		tmv = 0;
-		sourcesPlay[3] = true;
+		//sourcesPlay[3] = true;
 	}
 
 	glfwPollEvents();
@@ -2905,20 +2913,20 @@ void applicationLoop() {
 
 		//******************************************************************************************************
 
-		// Collider de mayow
+		// Collider de spider
 		AbstractModel::OBB spiderCollider;
-		glm::mat4 modelmatrixColliderMayow = glm::mat4(modelMatrixSpider);
-		modelmatrixColliderMayow = glm::rotate(modelmatrixColliderMayow,glm::radians(-90.0f), glm::vec3(1, 0, 0));
+		glm::mat4 modelmatrixColliderSpider = glm::mat4(modelMatrixSpider);
+		modelmatrixColliderSpider = glm::rotate(modelmatrixColliderSpider,glm::radians(-90.0f), glm::vec3(1, 0, 0));
 		// Set the orientation of collider before doing the scale
-		spiderCollider.u = glm::quat_cast(modelmatrixColliderMayow);
-		modelmatrixColliderMayow = glm::scale(modelmatrixColliderMayow, glm::vec3(0.06, 0.06, 0.06));
-		modelmatrixColliderMayow = glm::translate(modelmatrixColliderMayow,
+		spiderCollider.u = glm::quat_cast(modelmatrixColliderSpider);
+		modelmatrixColliderSpider = glm::scale(modelmatrixColliderSpider, glm::vec3(0.06, 0.06, 0.06));
+		modelmatrixColliderSpider = glm::translate(modelmatrixColliderSpider,
 			glm::vec3(spiderModelAnimate.getObb().c.x,
 				spiderModelAnimate.getObb().c.y,
 				spiderModelAnimate.getObb().c.z));
 		spiderCollider.e = spiderModelAnimate.getObb().e * glm::vec3(0.05, 0.07, 0.09) * glm::vec3(0.7, 0.7, 0.7);
-		spiderCollider.c = glm::vec3(modelmatrixColliderMayow[3]);
-		addOrUpdateColliders(collidersOBB, "mayow", spiderCollider, modelMatrixSpider);
+		spiderCollider.c = glm::vec3(modelmatrixColliderSpider[3]);
+		addOrUpdateColliders(collidersOBB, "spider", spiderCollider, modelMatrixSpider);
 
 		//***************************************************************************
 		// Collider Monedas
@@ -3244,6 +3252,7 @@ void renderScene(bool renderParticles) {
 		//animationIndex = 2;
 		modelMatrixSpider[3][1] = altura;
 	}
+	//animationIndex = 2;
 	glm::mat4 modelMatrixSpiderBody = glm::mat4(modelMatrixSpider);
 	modelMatrixSpiderBody = glm::scale(modelMatrixSpiderBody, glm::vec3(0.0006, 0.0006, 0.0006));
 	spiderModelAnimate.setAnimationIndex(animationIndex);
