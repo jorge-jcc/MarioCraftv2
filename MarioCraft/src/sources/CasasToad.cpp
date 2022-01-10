@@ -46,7 +46,7 @@ void CasasToad::Render(){
 
 void CasasToad::setShader(Shader* shader){
 	casaRoja->setShader(shader);
-	casaAzul->setShader(shader);
+	casaAzul->setShader(shader); 
 }
 
 CasaToad CasasToad::newCasa(tipoCasa tipo, float X, float Z, float rot){
