@@ -135,16 +135,16 @@ int vida = 100;
 Model spiderModelAnimate;
 
 
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
-Model venomModelAnimate;
+Model venomModelAnimate1;
+Model venomModelAnimate2;
+Model venomModelAnimate3;
+Model venomModelAnimate4;
+Model venomModelAnimate5;
+Model venomModelAnimate6;
+Model venomModelAnimate7;
+Model venomModelAnimate8;
+Model venomModelAnimate9;
+Model venomModelAnimate10;
 
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 16, "../Textures/heightmap.jpeg");
