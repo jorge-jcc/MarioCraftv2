@@ -3090,7 +3090,7 @@ void applicationLoop() {
 				}
 				addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
 			}
-			cout << "vel:" << velocidad << " vida: " << vidaActual << "/" << vidaMaxima << endl;
+			//cout << "vel:" << velocidad << " vida: " << vidaActual << "/" << vidaMaxima << endl;
 			for (std::map<std::string,
 				std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> >::iterator it =
 				collidersSBB.begin(); it != collidersSBB.end(); it++) {
