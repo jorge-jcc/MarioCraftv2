@@ -9,7 +9,7 @@ Para cambiar entre las opciones de los diferentes menus se debe presionar la tec
 
 Para seleccionar la opción marcada se debe presionar la tecla **espacio**.
 
-![](img/MenuOpciones.png)
+![](https://github.com/jorge-jcc/MarioCraftv2/blob/main/img/menuOpciones.png)
 
 ## Interacciones con el ambiente
 
