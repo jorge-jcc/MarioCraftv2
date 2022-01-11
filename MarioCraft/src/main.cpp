@@ -132,6 +132,7 @@ MarioCraftModel * speedCola = new MarioCraftModel();
 MarioCraftModel * doubleTap = new MarioCraftModel();
 MarioCraftModel * juggerNog = new MarioCraftModel();
 MarioCraftModel * quickRevive = new MarioCraftModel();
+MarioCraftModel * silla = new MarioCraftModel();
 CasasToad * casita = new CasasToad();
 Arbol * arbol = new Arbol();
 Antorcha * antorcha = new Antorcha();
@@ -308,8 +309,8 @@ GLuint depthMap, depthMapFBO;
  */
 
  // OpenAL Defines
-#define NUM_BUFFERS 5
-#define NUM_SOURCES 5
+#define NUM_BUFFERS 7
+#define NUM_SOURCES 7
 #define NUM_ENVIRONMENTS 1
 // Listener
 ALfloat listenerPos[] = { 0.0, 0.0, 0.0 };
@@ -330,6 +331,12 @@ ALfloat source3Vel[] = { 0.0, 0.0, 0.0 };
 // Source 4
 ALfloat source4Pos[] = { 0.0, 0.0, 0.0 };
 ALfloat source4Vel[] = { 0.0, 0.0, 0.0 };
+// Source 5
+ALfloat source5Pos[] = { 0.0, 0.0, 0.0 };
+ALfloat source5Vel[] = { 0.0, 0.0, 0.0 };
+// Source 6
+ALfloat source6Pos[] = { 0.0, 0.0, 0.0 };
+ALfloat source6Vel[] = { 0.0, 0.0, 0.0 };
 // Buffers
 ALuint buffer[NUM_BUFFERS];
 ALuint source[NUM_SOURCES];
@@ -340,7 +347,7 @@ ALenum format;
 ALvoid *data;
 int ch;
 ALboolean loop;
-std::vector<bool> sourcesPlay = { true, true, true, true, false, };
+std::vector<bool> sourcesPlay = { true, true, true, true, false, false, true };
 
 // Se definen todos las funciones.
 void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes);
@@ -811,6 +818,16 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	quickRevive->mcEnable(DEPTH);
 	models->addModel(quickRevive);
 
+	silla->loadModel("../models/silla/silla.obj");
+	silla->setShader(&shaderMulLighting);
+	silla
+		->Init(glm::mat4(1.0f))
+		->Translate(-07.f, 0.f, -85.0f)
+		->Scale(0.06f, 0.06f, 0.06f);
+	silla->matrix[3][1] = terrain.getHeightTerrain(silla->matrix[3][0], silla->matrix[3][2]) + 1.0;
+	silla->mcEnable(DEPTH);
+	models->addModel(silla);
+
 	vector<CasaToad> casitas = {
 		CasasToad::newCasa(AZUL,  8.f, - 5.f, -90.f), 
 		CasasToad::newCasa(ROJA,  8.f, -20.f, -90.f),
@@ -1097,6 +1114,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	buffer[2] = alutCreateBufferFromFile("../sounds/quickRevive.wav");
 	buffer[3] = alutCreateBufferFromFile("../sounds/speedCola.wav");
 	buffer[4] = alutCreateBufferFromFile("../sounds/moneda.wav");
+	buffer[5] = alutCreateBufferFromFile("../sounds/jump.wav");
+	buffer[6] = alutCreateBufferFromFile("../sounds/Fondo.wav");
 	int errorAlut = alutGetError();
 	if (errorAlut != ALUT_ERROR_NO_ERROR) {
 		printf("- Error open files with alut %d !!\n", errorAlut);
@@ -1114,44 +1133,60 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		printf("init - no errors after alGenSources\n");
 	}
 	alSourcef(source[0], AL_PITCH, 1.0f);
-	alSourcef(source[0], AL_GAIN, 0.02f);
+	alSourcef(source[0], AL_GAIN, 0.2f);
 	alSourcefv(source[0], AL_POSITION, source0Pos);
 	alSourcefv(source[0], AL_VELOCITY, source0Vel);
 	alSourcei(source[0], AL_BUFFER, buffer[0]);
 	alSourcei(source[0], AL_LOOPING, AL_TRUE);
-	alSourcef(source[0], AL_MAX_DISTANCE, 50);
+	alSourcef(source[0], AL_MAX_DISTANCE, 100);
 
 	alSourcef(source[1], AL_PITCH, 1.0f);
-	alSourcef(source[1], AL_GAIN, 0.02f);
+	alSourcef(source[1], AL_GAIN, 0.2f);
 	alSourcefv(source[1], AL_POSITION, source1Pos);
 	alSourcefv(source[1], AL_VELOCITY, source1Vel);
 	alSourcei(source[1], AL_BUFFER, buffer[1]);
 	alSourcei(source[1], AL_LOOPING, AL_TRUE);
-	alSourcef(source[1], AL_MAX_DISTANCE, 50);
+	alSourcef(source[1], AL_MAX_DISTANCE, 100);
 
 	alSourcef(source[2], AL_PITCH, 1.0f);
-	alSourcef(source[2], AL_GAIN, 0.02f);
+	alSourcef(source[2], AL_GAIN, 0.2f);
 	alSourcefv(source[2], AL_POSITION, source2Pos);
 	alSourcefv(source[2], AL_VELOCITY, source2Vel);
 	alSourcei(source[2], AL_BUFFER, buffer[2]);
 	alSourcei(source[2], AL_LOOPING, AL_TRUE);
-	alSourcef(source[2], AL_MAX_DISTANCE, 50);
+	alSourcef(source[2], AL_MAX_DISTANCE, 100);
 
 	alSourcef(source[3], AL_PITCH, 1.0f);
-	alSourcef(source[3], AL_GAIN, 0.02f);
+	alSourcef(source[3], AL_GAIN, 0.2f);
 	alSourcefv(source[3], AL_POSITION, source3Pos);
 	alSourcefv(source[3], AL_VELOCITY, source3Vel);
 	alSourcei(source[3], AL_BUFFER, buffer[3]);
 	alSourcei(source[3], AL_LOOPING, AL_TRUE);
-	alSourcef(source[3], AL_MAX_DISTANCE, 50);
+	alSourcef(source[3], AL_MAX_DISTANCE, 100);
 
 	alSourcef(source[4], AL_PITCH, 1.0f);
-	alSourcef(source[4], AL_GAIN, 1.0f);
+	alSourcef(source[4], AL_GAIN, 0.5f);
 	alSourcefv(source[4], AL_POSITION, source4Pos);
 	alSourcefv(source[4], AL_VELOCITY, source4Vel);
 	alSourcei(source[4], AL_BUFFER, buffer[4]);
 	alSourcei(source[4], AL_LOOPING, AL_FALSE);
 	alSourcef(source[4], AL_MAX_DISTANCE, 50);
+
+	alSourcef(source[5], AL_PITCH, 1.0f);
+	alSourcef(source[5], AL_GAIN, 0.5f);
+	alSourcefv(source[5], AL_POSITION, source5Pos);
+	alSourcefv(source[5], AL_VELOCITY, source5Vel);
+	alSourcei(source[5], AL_BUFFER, buffer[5]);
+	alSourcei(source[5], AL_LOOPING, AL_FALSE);
+	alSourcef(source[5], AL_MAX_DISTANCE, 50);
+
+	alSourcef(source[6], AL_PITCH, 1.0f);
+	alSourcef(source[6], AL_GAIN, 0.03f);
+	alSourcefv(source[6], AL_POSITION, source6Pos);
+	alSourcefv(source[6], AL_VELOCITY, source6Vel);
+	alSourcei(source[6], AL_BUFFER, buffer[6]);
+	alSourcei(source[6], AL_LOOPING, AL_TRUE);
+	alSourcef(source[6], AL_MAX_DISTANCE, 5000);
 
 	// Se incializa el modelo de texels para dibujar texto
 	modelText = new FontTypeRendering::FontTypeRendering(screenWidth, screenHeight);
@@ -1335,6 +1370,7 @@ bool processInput(bool continueApplication) {
 
 			const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
 			if (!isJump && buttons[0] == GLFW_PRESS) {
+				sourcesPlay[5] = true;
 				animationIndex = 1;
 				isJump = true;
 				startTimeJump = currTime;
@@ -1392,7 +1428,7 @@ bool processInput(bool continueApplication) {
 			isJump = true;
 			startTimeJump = currTime;
 			tmv = 0;
-			//sourcesPlay[3] = true;
+			sourcesPlay[5] = true;
 		}
 	}
 	glfwPollEvents();
@@ -1664,7 +1700,7 @@ void applicationLoop() {
 		}
 		renderGUI();
 		if (status == GAME){
-
+			silla->matrix = glm::rotate(silla->matrix, glm::radians(5.f), glm::vec3(0, 1, 0));
 			 /*******************************************
 			  * Creacion de colliders
 			  * IMPORTANT do this before interpolations
@@ -1985,6 +2021,15 @@ void applicationLoop() {
 			quickReviveCollider.e = quickRevive->getObb().e * glm::vec3(0.05f, 0.05f, 0.05f);
 			addOrUpdateColliders(collidersOBB, "quickRevive", quickReviveCollider, quickRevive->matrix);
 
+			AbstractModel::OBB sillaGiratoriaCollider;
+			glm::mat4 modelMatrixColliderSillaGiratoria = glm::mat4(silla->matrix);
+			// Set the orientation of collider before doing the scale
+			sillaGiratoriaCollider.u = glm::quat_cast(silla->matrix);
+			modelMatrixColliderSillaGiratoria = glm::translate(modelMatrixColliderSillaGiratoria, silla->getObb().c);
+			modelMatrixColliderSillaGiratoria = glm::translate(modelMatrixColliderSillaGiratoria, glm::vec3(0.0f, 0.0f, 0.0f));
+			sillaGiratoriaCollider.c = glm::vec3(modelMatrixColliderSillaGiratoria[3]);
+			sillaGiratoriaCollider.e = silla->getObb().e * glm::vec3(0.06f, 0.06f, 0.06f);
+			addOrUpdateColliders(collidersOBB, "sillaGiratoria", sillaGiratoriaCollider, silla->matrix);
 
 			//Collider Laberinto *****************************************************************************
 			AbstractModel::OBB laberintoCollider0;
@@ -3217,6 +3262,16 @@ void applicationLoop() {
 			source4Pos[1] = modelMatrixSpider[3].y;
 			source4Pos[2] = modelMatrixSpider[3].z;
 			alSourcefv(source[4], AL_POSITION, source4Pos);
+
+			source5Pos[0] = modelMatrixSpider[3].x;
+			source5Pos[1] = modelMatrixSpider[3].y;
+			source5Pos[2] = modelMatrixSpider[3].z;
+			alSourcefv(source[5], AL_POSITION, source5Pos);
+
+			source5Pos[0] = modelMatrixSpider[3].x;
+			source5Pos[1] = modelMatrixSpider[3].y;
+			source5Pos[2] = modelMatrixSpider[3].z;
+			alSourcefv(source[6], AL_POSITION, source6Pos);
 
 			// Listener for the Thris person camera
 			listenerPos[0] = modelMatrixSpider[3].x;
