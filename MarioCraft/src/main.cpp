@@ -3134,6 +3134,10 @@ void applicationLoop() {
 								velocidad = .6f;
 								isCollision = true;
 							}
+							else if (jt->first.find("sillaGiratoria") == 0) {
+								status = WIN;
+								isCollision = true;
+							}
 							else
 								isCollision = true;
 						}
