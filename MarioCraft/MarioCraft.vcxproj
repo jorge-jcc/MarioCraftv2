@@ -24,6 +24,7 @@
     <ClCompile Include="src\sources\Arbol.cpp" />
     <ClCompile Include="src\sources\CasasToad.cpp" />
     <ClCompile Include="src\sources\Dragon.cpp" />
+    <ClCompile Include="src\sources\GuiTexture.cpp" />
     <ClCompile Include="src\sources\Lampara.cpp" />
     <ClCompile Include="src\sources\MarioCraftCamera.cpp" />
     <ClCompile Include="src\sources\MarioCraftModel.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="src\headers\Arbol.h" />
     <ClInclude Include="src\headers\CasasToad.h" />
     <ClInclude Include="src\headers\Dragon.h" />
+    <ClInclude Include="src\headers\GuiTexture.h" />
     <ClInclude Include="src\headers\Lampara.h" />
     <ClInclude Include="src\headers\libs.h" />
     <ClInclude Include="src\headers\MarioCraftCamera.h" />

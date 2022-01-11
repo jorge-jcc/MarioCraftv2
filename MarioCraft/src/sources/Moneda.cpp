@@ -5,7 +5,7 @@ void Moneda::Load(Shader* shader){
 	MarioCraftModel::setShader(shader);
 }
 
-void Moneda::InitMatrices(vector<float> moneditas, Terrain* terrain){
+void Moneda::InitMatrices(Terrain* terrain){
 	glm::mat4 aux;
 	for (int i = 0; i < moneditas.size(); i += 3) {
 		aux = glm::translate(glm::mat4(1.f), glm::vec3(moneditas[i], 0.0f, moneditas[i + 2]));
