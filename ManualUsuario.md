@@ -65,3 +65,8 @@ Para moverse por el escenario, se dispone de una cámara en primera y tercera pe
  - Derrota
    - Si perdemos todos los corazones entonces obtendremos la pantalla de "Game Over" donde podremos salir del juego o reintentarlo desde el principio.
 ### 4 Ejecución:
+1. Descargar el archivo [ejecutable](https://drive.google.com/file/d/1BbdESTUsI4wB0n1HXO2nJr0FwoJzYXqs/view?usp=sharing).
+
+2. Descomprimir el archivo y abrir la carpeta MarioCraft.
+
+3. Ejecutar el archivo **MarioCraft.exe**
