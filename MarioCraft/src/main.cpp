@@ -69,7 +69,7 @@
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 #define NUM_CASAS 2
 
-enum Display {MENU, GAME, GAME_OVER, EXIT};
+enum Display {MENU, GAME, GAME_OVER, WIN};
 
 Display status = MENU;
 bool spaceSelect = true;
@@ -188,6 +188,7 @@ GuiTexture* textureMenuExit;
 GuiTexture** textureExit;
 GuiTexture* textureExitMenu;
 GuiTexture* textureExitExit;
+GuiTexture* textureWin;
 // Game
 GuiTexture* textureMonedita;
 GuiTexture* textureJump;
@@ -980,6 +981,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureExitMenu = new GuiTexture("../Textures/ImagenesInterfaz/FinJuego1.png", glm::vec2(0.f), glm::vec2(1.f));
 	textureExitExit = new GuiTexture("../Textures/ImagenesInterfaz/FinJuego2.png", glm::vec2(0.f), glm::vec2(1.f));
 	textureExit = &textureExitMenu;
+	// - Win
+	textureWin = new GuiTexture("../Textures/ImagenesInterfaz/Win.png", glm::vec2(0.f), glm::vec2(1.f));
 
 	// - Vidas
 	texturaVidas.insert({ 20, new GuiTexture("../Textures/ImagenesInterfaz/Vida01.png", glm::vec2(-0.6f, -0.8f), glm::vec2(0.35, 0.1)) });
@@ -1309,6 +1312,10 @@ bool processInput(bool continueApplication) {
 		}
 		else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
 			spaceSelect = true;
+	}
+	else if (status == WIN) {
+		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+			return false;
 	}
 	else {
 		//control de Xbox
@@ -3175,6 +3182,8 @@ void applicationLoop() {
 
 		if (vidaActual <= 0)
 			status = GAME_OVER;
+		else if (puntos >= 50)
+			status = WIN;
 
 		glfwSwapBuffers(window);
 
@@ -3420,6 +3429,12 @@ void renderGUI() {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, (*textureExit)->texture->id);
 		shaderGui.setMatrix4("transformationMatrix", 1, false, glm::value_ptr((*textureExit)->matrix));
+		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+	}
+	else if (status == WIN) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureWin->texture->id);
+		shaderGui.setMatrix4("transformationMatrix", 1, false, glm::value_ptr(textureWin->matrix));
 		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 	}
 	else if (status == GAME) {
